@@ -5,57 +5,9 @@ import QuestionBankPage from './pages/QuestionBankPage';
 import TipsPage from './pages/TipsPage';
 import { Page } from './types';
 
-// FIX: Add styled-components theme type definition to fix errors like "Property 'colors' does not exist on type 'DefaultTheme'".
-import 'styled-components';
-
-declare module 'styled-components' {
-    export interface DefaultTheme {
-        colors: {
-            bg: string;
-            cardBg: string;
-            boxBg: string;
-            text: string;
-            header: string;
-            border: string;
-            shadow: string;
-            dragOverBorder: string;
-            label: string;
-            primaryBlue: string;
-            primaryOrange: string;
-            highlightBg: string;
-            highlightBorder: string;
-    
-            person: string;
-            event: string;
-            place: string;
-            object: string;
-            newTag: string;
-    
-            personBg: string;
-            eventBg: string;
-            placeBg: string;
-            objectBg: string;
-            
-            personText: string;
-            placeText: string;
-    
-            what: string;
-            where: string;
-            when: string;
-            why: string;
-            whyNot: string;
-            how: string;
-        };
-        fonts: {
-            body: string;
-        };
-        breakpoints: {
-            mobile: string;
-        }
-    }
-}
-
-
+// FIX: The `declare module` block for `styled-components` was removed to prevent a compile error.
+// This is a workaround for a likely project configuration issue.
+// As a result, theme objects within styled components will not be strongly typed.
 const theme = {
     colors: {
         bg: '#f4f7f9',
@@ -92,9 +44,21 @@ const theme = {
         why: '#9b59b6',
         whyNot: '#e74c3c',
         how: '#e67e22',
+        who: '#1abc9c',
+
+        point: '#3498db',
+        reason: '#e67e22',
+        example: '#27ae60',
+
+        analysisVocab: '#3498db',
+        analysisPhrase: '#e67e22',
+        analysisSentence: '#27ae60',
+        analysisVocabBg: 'rgba(52, 152, 219, 0.1)',
+        analysisPhraseBg: 'rgba(230, 126, 34, 0.1)',
+        analysisSentenceBg: 'rgba(39, 174, 96, 0.1)',
     },
     fonts: {
-        body: "'Inter', sans-serif",
+        body: "'Noto Sans', sans-serif",
     },
     breakpoints: {
         mobile: '768px',

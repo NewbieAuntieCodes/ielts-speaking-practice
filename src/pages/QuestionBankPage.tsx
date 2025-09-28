@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { styled } from 'styled-components';
 import TopicContainer from '../components/TopicContainer';
-import { initialPart1Data, initialPart2Data, CueCardData } from '../data';
+import { initialPart1Data, initialPart2Data, CueCardData, AnalysisData } from '../data';
 
 interface QuestionBankPageProps {
     navigateTo: (page: 'home') => void;
@@ -19,14 +19,55 @@ const BackArrowIcon = () => (
     </svg>
 );
 
+const AnalysisIcon = ({ type }: { type: AnalysisData['type'] }) => {
+    const icons: { [key in AnalysisData['type']]: React.ReactElement } = {
+        vocab: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>,
+        phrase: <svg xmlns="http://www.w.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-3-3-4-6-4S1 2 1 5v8c0 7 4 8 7 8Z"></path><path d="M21 21c-3 0-7-1-7-8V5c0-3 3-4 6-4s5 1 5 4v8c0 7-4 8-7 8Z"></path></svg>,
+        sentence: <svg xmlns="http://www.w.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>,
+    };
+    return <AnalysisIconWrapper type={type}>{icons[type]}</AnalysisIconWrapper>;
+}
+
+// Helper to safely create a regex for splitting
+function escapeRegExp(string: string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+const AnalyzedText: React.FC<{ answer: string; analysis: AnalysisData[] }> = ({ answer, analysis }) => {
+    if (!analysis || analysis.length === 0) {
+        return <p>{answer}</p>;
+    }
+
+    const analysisMap = new Map<string, AnalysisData>();
+    analysis.forEach(item => analysisMap.set(item.text, item));
+
+    const regex = new RegExp(`(${analysis.map(item => escapeRegExp(item.text)).join('|')})`, 'g');
+    const parts = answer.split(regex).filter(part => part);
+
+    return (
+        <AnalyzedAnswerContainer>
+            {parts.map((part, index) => {
+                const analysisItem = analysisMap.get(part);
+                if (analysisItem) {
+                    return <Highlight key={index} type={analysisItem.type}>{part}</Highlight>;
+                }
+                return <span key={index}>{part}</span>;
+            })}
+        </AnalyzedAnswerContainer>
+    );
+};
+
+
 const TopicModal: React.FC<TopicModalProps> = ({ card, onClose }) => {
-    const [isAnswerVisible, setIsAnswerVisible] = useState(false);
+    const [isAnalysisVisible, setIsAnalysisVisible] = useState(false);
+    const [activeAnalysisTab, setActiveAnalysisTab] = useState<'answer' | 'analysis'>('answer');
 
     const handleModalContentClick = (e: React.MouseEvent) => {
         e.stopPropagation();
     };
 
-    const sampleAnswers = card.sampleAnswer ? card.sampleAnswer.split('\n---\n') : [];
+    const hasSampleAnswers = card.sampleAnswers && card.sampleAnswers.length > 0;
+    const hasAnalysis = hasSampleAnswers && card.sampleAnswers.some(s => s.analysis && s.analysis.length > 0);
 
     return (
         <ModalOverlay onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -51,28 +92,56 @@ const TopicModal: React.FC<TopicModalProps> = ({ card, onClose }) => {
                         </ol>
                     </QuestionsSection>
                     
-                    {card.sampleAnswer && (
+                    {hasSampleAnswers && (
                          <AnswerSection>
                              <ModalActions>
-                                <ActionButton isPrimary={false} onClick={() => setIsAnswerVisible(!isAnswerVisible)}>
-                                    {isAnswerVisible ? '隐藏范文' : '参考范文'}
+                                <ActionButton isPrimary={false} onClick={() => setIsAnalysisVisible(!isAnalysisVisible)}>
+                                    {isAnalysisVisible ? '隐藏解析' : '显示解析'}
                                 </ActionButton>
                                 <ActionButton isPrimary={true}>立即练习</ActionButton>
                             </ModalActions>
-                            {isAnswerVisible && (
-                                <AnswerContent>
-                                    <h4>参考范文 (IELTS 5.5)</h4>
-                                    <div>
-                                        {card.questions?.map((question, index) => (
-                                            <QAPair key={index}>
-                                                <AnswerQuestion>{index + 1}. {question}</AnswerQuestion>
-                                                <AnswerText>
-                                                    {sampleAnswers[index] || ''}
-                                                </AnswerText>
-                                            </QAPair>
-                                        ))}
-                                    </div>
-                                </AnswerContent>
+                            {isAnalysisVisible && (
+                                <AnalysisContainer>
+                                    <AnalysisTabNav>
+                                        <AnalysisTabButton $active={activeAnalysisTab === 'answer'} onClick={() => setActiveAnalysisTab('answer')}>参考范文</AnalysisTabButton>
+                                        {hasAnalysis && <AnalysisTabButton $active={activeAnalysisTab === 'analysis'} onClick={() => setActiveAnalysisTab('analysis')}>范文精讲</AnalysisTabButton>}
+                                    </AnalysisTabNav>
+                                    
+                                    {activeAnalysisTab === 'answer' && (
+                                        <AnswerContent>
+                                            <h4>参考范文 (IELTS 5.5)</h4>
+                                            <div>
+                                                {card.sampleAnswers?.map((qa, index) => (
+                                                    <QAPair key={index}>
+                                                        <AnswerQuestion>{index + 1}. {qa.question}</AnswerQuestion>
+                                                        <AnswerText>{qa.answer}</AnswerText>
+                                                    </QAPair>
+                                                ))}
+                                            </div>
+                                        </AnswerContent>
+                                    )}
+
+                                    {activeAnalysisTab === 'analysis' && hasAnalysis && (
+                                        <AnswerContent>
+                                            <h4>范文精讲 (IELTS 5.5)</h4>
+                                            <div>
+                                                {card.sampleAnswers?.map((qa, index) => (
+                                                    <QAPairAnalysis key={index}>
+                                                        <AnswerQuestion>{index + 1}. {qa.question}</AnswerQuestion>
+                                                        <AnalyzedText answer={qa.answer} analysis={qa.analysis || []} />
+                                                        {qa.analysis && qa.analysis.length > 0 && (
+                                                            <AnalysisDetailsGrid>
+                                                                {qa.analysis.map((item, idx) => (
+                                                                    <AnalysisDetailCard key={idx} item={item} />
+                                                                ))}
+                                                            </AnalysisDetailsGrid>
+                                                        )}
+                                                    </QAPairAnalysis>
+                                                ))}
+                                            </div>
+                                        </AnswerContent>
+                                    )}
+                                </AnalysisContainer>
                             )}
                         </AnswerSection>
                     )}
@@ -84,6 +153,18 @@ const TopicModal: React.FC<TopicModalProps> = ({ card, onClose }) => {
         </ModalOverlay>
     );
 };
+
+const AnalysisDetailCard: React.FC<{ item: AnalysisData }> = ({ item }) => (
+    <AnalysisCardWrapper type={item.type}>
+        <AnalysisCardHeader>
+            <AnalysisIcon type={item.type} />
+            <AnalysisCardText>{item.text}</AnalysisCardText>
+        </AnalysisCardHeader>
+        <AnalysisCardExplanation>
+            {item.explanation}
+        </AnalysisCardExplanation>
+    </AnalysisCardWrapper>
+);
 
 const QuestionBankPage: React.FC<QuestionBankPageProps> = ({ navigateTo }) => {
     const [activePage, setActivePage] = useState<'part1' | 'part2'>('part1');
@@ -350,7 +431,6 @@ const QuestionsSection = styled.section`
     padding: 1.5rem;
     border-radius: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    margin-bottom: 1.5rem;
 
     h3 {
         margin: 0 0 1rem 0;
@@ -379,10 +459,39 @@ const AnswerSection = styled.section`
     margin-top: 1.5rem;
 `;
 
-const AnswerContent = styled.div`
+const AnalysisContainer = styled.div`
     margin-top: 1.5rem;
-    background-color: ${({ theme }) => theme.colors.highlightBg};
-    border: 1px solid ${({ theme }) => theme.colors.highlightBorder};
+    animation: fadeIn 0.4s ease;
+`;
+
+const AnalysisTabNav = styled.nav`
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+    margin-bottom: 1.5rem;
+`;
+
+const AnalysisTabButton = styled.button<{ $active?: boolean }>`
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.75rem 0.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: ${({ theme, $active }) => $active ? theme.colors.header : theme.colors.label};
+    border-bottom: 3px solid ${({ theme, $active }) => $active ? theme.colors.primaryBlue : 'transparent'};
+    margin-bottom: -1px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        color: ${({ theme }) => theme.colors.header};
+    }
+`;
+
+const AnswerContent = styled.div`
+    background-color: ${({ theme }) => theme.colors.cardBg};
+    border: 1px solid ${({ theme }) => theme.colors.border};
     padding: 1.5rem;
     border-radius: 16px;
 
@@ -404,6 +513,11 @@ const QAPair = styled.div`
     }
 `;
 
+const QAPairAnalysis = styled(QAPair)`
+    border-bottom: 1px dashed ${({ theme }) => theme.colors.border};
+    padding-bottom: 1.5rem;
+`;
+
 const AnswerQuestion = styled.p`
     font-weight: 600;
     color: ${({ theme }) => theme.colors.header};
@@ -412,10 +526,68 @@ const AnswerQuestion = styled.p`
 `;
 
 const AnswerText = styled.p`
-    margin: 0 0 0 1.5em; /* Indent whole paragraph */
+    margin: 0;
     line-height: 1.7;
     color: #34495e;
 `;
+
+const AnalyzedAnswerContainer = styled.p`
+    margin: 0;
+    line-height: 1.8;
+    color: #34495e;
+`;
+
+const Highlight = styled.span<{ type: AnalysisData['type'] }>`
+    background-color: ${({ theme, type }) => theme.colors[`analysis${type.charAt(0).toUpperCase() + type.slice(1)}Bg` as keyof typeof theme.colors]};
+    border-bottom: 2px solid ${({ theme, type }) => theme.colors[`analysis${type.charAt(0).toUpperCase() + type.slice(1)}` as keyof typeof theme.colors]};
+    border-radius: 3px 3px 0 0;
+    padding: 0.1em 0.2em;
+    font-weight: 500;
+`;
+
+const AnalysisDetailsGrid = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.25rem;
+`;
+
+const AnalysisCardWrapper = styled.div<{ type: AnalysisData['type'] }>`
+    background-color: ${({ theme }) => theme.colors.bg};
+    border: 1px solid ${({ theme }) => theme.colors.border};
+    border-left: 4px solid ${({ theme, type }) => theme.colors[`analysis${type.charAt(0).toUpperCase() + type.slice(1)}` as keyof typeof theme.colors]};
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+`;
+
+const AnalysisCardHeader = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+`;
+
+const AnalysisIconWrapper = styled.div<{ type: AnalysisData['type'] }>`
+    color: ${({ theme, type }) => theme.colors[`analysis${type.charAt(0).toUpperCase() + type.slice(1)}` as keyof typeof theme.colors]};
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+`;
+
+const AnalysisCardText = styled.div`
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.header};
+    font-size: 1rem;
+`;
+
+const AnalysisCardExplanation = styled.div`
+    font-size: 0.95rem;
+    color: #34495e;
+    line-height: 1.6;
+    padding-left: calc(20px + 0.75rem);
+`;
+
 
 const ModalActions = styled.div`
     display: flex;
