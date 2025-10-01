@@ -74,6 +74,16 @@ const HomeHeader = styled.header`
         color: ${({ theme }) => theme.colors.label};
         margin-top: 0;
     }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+        margin-bottom: 2.5rem;
+        h1 {
+            font-size: 2.25rem;
+        }
+        p {
+            font-size: 1rem;
+        }
+    }
 `;
 
 const NavCards = styled.main`
@@ -128,6 +138,13 @@ const NavCard = styled.div`
 
     &:nth-child(1) ${NavCardIcon} {
         color: ${({ theme }) => theme.colors.primaryOrange};
+    }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+        padding: 2rem 1.5rem;
+        h2 {
+            font-size: 1.5rem;
+        }
     }
 `;
 

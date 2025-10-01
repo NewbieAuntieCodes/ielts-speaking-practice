@@ -1,172 +1,161 @@
 import React, { useState } from 'react';
 import { styled } from 'styled-components';
 import TopicContainer from '../components/TopicContainer';
-import { initialPart1Data, initialPart2Data, CueCardData, AnalysisData } from '../data';
+import { initialPart1Data, initialPart2Data, CueCardData } from '../data';
 
 interface QuestionBankPageProps {
     navigateTo: (page: 'home') => void;
+    navigateToAnalysis: (card: CueCardData) => void;
 }
 
 interface TopicModalProps {
     card: CueCardData;
     onClose: () => void;
+    navigateToAnalysis: (card: CueCardData) => void;
 }
 
 const BackArrowIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <line x1="19" y1="12" x2="5" y2="12"></line>
         <polyline points="12 19 5 12 12 5"></polyline>
     </svg>
 );
 
-const AnalysisIcon = ({ type }: { type: AnalysisData['type'] }) => {
-    const icons: { [key in AnalysisData['type']]: React.ReactElement } = {
-        vocab: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>,
-        phrase: <svg xmlns="http://www.w.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-3-3-4-6-4S1 2 1 5v8c0 7 4 8 7 8Z"></path><path d="M21 21c-3 0-7-1-7-8V5c0-3 3-4 6-4s5 1 5 4v8c0 7-4 8-7 8Z"></path></svg>,
-        sentence: <svg xmlns="http://www.w.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>,
-    };
-    return <AnalysisIconWrapper type={type}>{icons[type]}</AnalysisIconWrapper>;
-}
+const HelmIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <circle cx="12" cy="12" r="3" />
+        <line x1="12" y1="2" x2="12" y2="5" />
+        <line x1="12" y1="19" x2="12" y2="22" />
+        <line x1="2" y1="12" x2="5" y2="12" />
+        <line x1="19" y1="12" x2="22" y2="12" />
+        <line x1="4.93" y1="4.93" x2="7.05" y2="7.05" />
+        <line x1="16.95" y1="16.95" x2="19.07" y2="19.07" />
+        <line x1="4.93" y1="19.07" x2="7.05" y2="16.95" />
+        <line x1="16.95" y1="7.05" x2="19.07" y2="4.93" />
+    </svg>
+);
 
-// Helper to safely create a regex for splitting
-function escapeRegExp(string: string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-const AnalyzedText: React.FC<{ answer: string; analysis: AnalysisData[] }> = ({ answer, analysis }) => {
-    if (!analysis || analysis.length === 0) {
-        return <p>{answer}</p>;
-    }
-
-    const analysisMap = new Map<string, AnalysisData>();
-    analysis.forEach(item => analysisMap.set(item.text, item));
-
-    const regex = new RegExp(`(${analysis.map(item => escapeRegExp(item.text)).join('|')})`, 'g');
-    const parts = answer.split(regex).filter(part => part);
-
-    return (
-        <AnalyzedAnswerContainer>
-            {parts.map((part, index) => {
-                const analysisItem = analysisMap.get(part);
-                if (analysisItem) {
-                    return <Highlight key={index} type={analysisItem.type}>{part}</Highlight>;
-                }
-                return <span key={index}>{part}</span>;
-            })}
-        </AnalyzedAnswerContainer>
-    );
-};
+const PrevIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>;
+const NextIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>;
 
 
-const TopicModal: React.FC<TopicModalProps> = ({ card, onClose }) => {
-    const [isAnalysisVisible, setIsAnalysisVisible] = useState(false);
-    const [activeAnalysisTab, setActiveAnalysisTab] = useState<'answer' | 'analysis'>('answer');
-
+const TopicModal: React.FC<TopicModalProps> = ({ card, onClose, navigateToAnalysis }) => {
     const handleModalContentClick = (e: React.MouseEvent) => {
         e.stopPropagation();
     };
 
-    const hasSampleAnswers = card.sampleAnswers && card.sampleAnswers.length > 0;
-    const hasAnalysis = hasSampleAnswers && card.sampleAnswers.some(s => s.analysis && s.analysis.length > 0);
+    const handleAnalysisClick = () => {
+        // P2+3 cards currently don't have sample answers, so this button is for future use.
+        // For P1 cards, it will navigate to the analysis page.
+        if (card.sampleAnswers && card.sampleAnswers.length > 0) {
+            onClose();
+            navigateToAnalysis(card);
+        }
+    };
 
+    const isPart2Card = !!card.part2Title;
+    
+    // Part 2+3 Card Layout
+    if (isPart2Card) {
+        return (
+            <ModalOverlay onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="modal-title-p2">
+                 <ModalContainerP2 onClick={handleModalContentClick}>
+                     <HeaderP2>
+                        <BackButtonP2 onClick={onClose} aria-label="返回"><BackArrowIcon /></BackButtonP2>
+                        <h3>P2&P3题卡</h3>
+                        <RefreshButtonP2 aria-label="刷新"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L20.5 10a5 5 0 0 0-7.82 5.42L11 17.5"/></svg></RefreshButtonP2>
+                     </HeaderP2>
+                     <ContentP2>
+                        <CardWrapper>
+                             <Sidebar>
+                                <HelmIcon />
+                                <DateText>【2025年 9-12月】</DateText>
+                             </Sidebar>
+                             <MainContent>
+                                {card.status === 'New' && <NewTag>新题</NewTag>}
+                                
+                                <CardTitle id="modal-title-p2">{card.title}</CardTitle>
+                                
+                                <PartSection>
+                                    <PartLabel>Part 2</PartLabel>
+                                    <Part2Title>{card.part2Title}</Part2Title>
+                                    <p><strong>{card.part2Description}</strong></p>
+                                    <Part2Prompts>
+                                        {card.part2Prompts?.map((prompt, i) => <li key={i}>{prompt}</li>)}
+                                    </Part2Prompts>
+                                </PartSection>
+
+                                <PartSection>
+                                    <PartLabel>Part 3</PartLabel>
+                                    <Part3Questions>
+                                         {card.part3Questions?.map((q, i) => <li key={i}>{q}</li>)}
+                                    </Part3Questions>
+                                </PartSection>
+                             </MainContent>
+                        </CardWrapper>
+                     </ContentP2>
+                     <FooterP2>
+                        <PrevNextNav>
+                             <button disabled><PrevIcon /> 上一题</button>
+                             <button disabled>下一题 <NextIcon /></button>
+                        </PrevNextNav>
+                         <MainActions>
+                             <ActionButtonOrange onClick={handleAnalysisClick}>参考答案</ActionButtonOrange>
+                             <ActionButtonBlue>立即练习</ActionButtonBlue>
+                         </MainActions>
+                         <SupplementaryAction>我要补充</SupplementaryAction>
+                     </FooterP2>
+                 </ModalContainerP2>
+            </ModalOverlay>
+        );
+    }
+
+    // Default Part 1 Card Layout
+    const hasSampleAnswers = card.sampleAnswers && card.sampleAnswers.length > 0;
     return (
-        <ModalOverlay onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="modal-title">
-            <ModalContainer onClick={handleModalContentClick}>
-                <ModalHeader>
+        <ModalOverlay onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="modal-title-p1">
+            <ModalContainerP1 onClick={handleModalContentClick}>
+                <ModalHeaderP1>
                     <div className="modal-header-content">
                          <ModalHeaderTag>【2025年 9-12月】</ModalHeaderTag>
-                         <h2 id="modal-title">{card.title}</h2>
+                         <h2 id="modal-title-p1">{card.title}</h2>
                     </div>
-                     {card.status === 'New' && <ModalNewTag>新题</ModalNewTag>}
-                    <ModalCloseButton onClick={onClose} aria-label="关闭">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </ModalCloseButton>
-                </ModalHeader>
-                <ModalContent>
-                    <QuestionsSection>
+                     {card.status === 'New' && <ModalNewTagP1>新题</ModalNewTagP1>}
+                    <ModalCloseButtonP1 onClick={onClose} aria-label="关闭">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </ModalCloseButtonP1>
+                </ModalHeaderP1>
+                <ModalContentP1>
+                    <QuestionsSectionP1>
                         <h3>问题列表</h3>
                         <ol>
-                            {card.questions?.map((q, index) => (
+                            {card.part1Questions?.map((q, index) => (
                                 <li key={index}>{q}</li>
                             ))}
                         </ol>
-                    </QuestionsSection>
+                    </QuestionsSectionP1>
                     
                     {hasSampleAnswers && (
-                         <AnswerSection>
-                             <ModalActions>
-                                <ActionButton isPrimary={false} onClick={() => setIsAnalysisVisible(!isAnalysisVisible)}>
-                                    {isAnalysisVisible ? '隐藏解析' : '显示解析'}
+                         <AnswerSectionP1>
+                             <ModalActionsP1>
+                                <ActionButton isPrimary={false} onClick={handleAnalysisClick}>
+                                    查看范文与精讲
                                 </ActionButton>
                                 <ActionButton isPrimary={true}>立即练习</ActionButton>
-                            </ModalActions>
-                            {isAnalysisVisible && (
-                                <AnalysisContainer>
-                                    <AnalysisTabNav>
-                                        <AnalysisTabButton $active={activeAnalysisTab === 'answer'} onClick={() => setActiveAnalysisTab('answer')}>参考范文</AnalysisTabButton>
-                                        {hasAnalysis && <AnalysisTabButton $active={activeAnalysisTab === 'analysis'} onClick={() => setActiveAnalysisTab('analysis')}>范文精讲</AnalysisTabButton>}
-                                    </AnalysisTabNav>
-                                    
-                                    {activeAnalysisTab === 'answer' && (
-                                        <AnswerContent>
-                                            <h4>参考范文 (IELTS 5.5)</h4>
-                                            <div>
-                                                {card.sampleAnswers?.map((qa, index) => (
-                                                    <QAPair key={index}>
-                                                        <AnswerQuestion>{index + 1}. {qa.question}</AnswerQuestion>
-                                                        <AnswerText>{qa.answer}</AnswerText>
-                                                    </QAPair>
-                                                ))}
-                                            </div>
-                                        </AnswerContent>
-                                    )}
-
-                                    {activeAnalysisTab === 'analysis' && hasAnalysis && (
-                                        <AnswerContent>
-                                            <h4>范文精讲 (IELTS 5.5)</h4>
-                                            <div>
-                                                {card.sampleAnswers?.map((qa, index) => (
-                                                    <QAPairAnalysis key={index}>
-                                                        <AnswerQuestion>{index + 1}. {qa.question}</AnswerQuestion>
-                                                        <AnalyzedText answer={qa.answer} analysis={qa.analysis || []} />
-                                                        {qa.analysis && qa.analysis.length > 0 && (
-                                                            <AnalysisDetailsGrid>
-                                                                {qa.analysis.map((item, idx) => (
-                                                                    <AnalysisDetailCard key={idx} item={item} />
-                                                                ))}
-                                                            </AnalysisDetailsGrid>
-                                                        )}
-                                                    </QAPairAnalysis>
-                                                ))}
-                                            </div>
-                                        </AnswerContent>
-                                    )}
-                                </AnalysisContainer>
-                            )}
-                        </AnswerSection>
+                            </ModalActionsP1>
+                        </AnswerSectionP1>
                     )}
-                </ModalContent>
-                 <ModalFooter>
+                </ModalContentP1>
+                 <ModalFooterP1>
                     <SecondaryButton>我要补充</SecondaryButton>
-                </ModalFooter>
-            </ModalContainer>
+                </ModalFooterP1>
+            </ModalContainerP1>
         </ModalOverlay>
     );
 };
 
-const AnalysisDetailCard: React.FC<{ item: AnalysisData }> = ({ item }) => (
-    <AnalysisCardWrapper type={item.type}>
-        <AnalysisCardHeader>
-            <AnalysisIcon type={item.type} />
-            <AnalysisCardText>{item.text}</AnalysisCardText>
-        </AnalysisCardHeader>
-        <AnalysisCardExplanation>
-            {item.explanation}
-        </AnalysisCardExplanation>
-    </AnalysisCardWrapper>
-);
-
-const QuestionBankPage: React.FC<QuestionBankPageProps> = ({ navigateTo }) => {
+const QuestionBankPage: React.FC<QuestionBankPageProps> = ({ navigateTo, navigateToAnalysis }) => {
     const [activePage, setActivePage] = useState<'part1' | 'part2'>('part1');
     const [selectedCard, setSelectedCard] = useState<CueCardData | null>(null);
 
@@ -216,25 +205,28 @@ const QuestionBankPage: React.FC<QuestionBankPageProps> = ({ navigateTo }) => {
                 />
             </div>
 
-            {selectedCard && <TopicModal card={selectedCard} onClose={handleCloseModal} />}
+            {selectedCard && <TopicModal card={selectedCard} onClose={handleCloseModal} navigateToAnalysis={navigateToAnalysis} />}
         </>
     );
 };
 
-// Styled Components
+// --- GENERAL STYLED COMPONENTS ---
 const Header = styled.header`
     text-align: center;
     margin-bottom: 3rem;
     position: relative;
+
     h1 {
         font-size: 2.5rem;
         font-weight: 700;
         color: ${({ theme }) => theme.colors.header};
+        margin: 0 6rem; /* Avoids overlap with back button */
     }
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
         margin-bottom: 2rem;
         h1 {
-            font-size: 2rem;
+            font-size: 1.5rem;
+            margin: 0 3.5rem;
         }
     }
 `;
@@ -243,7 +235,7 @@ const Nav = styled.nav`
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 `;
 
 const NavButton = styled.button<{ $active?: boolean }>`
@@ -301,13 +293,18 @@ const BackButton = styled.button`
 
 const HeaderBackButton = styled(BackButton)`
     position: absolute;
-    top: 10px;
+    top: 50%;
     left: 0;
-    transform: none;
+    transform: translateY(-50%);
 
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-        position: static;
-        margin: 0 auto 1.5rem auto;
+        padding: 0.6rem;
+        top: 0;
+        transform: none;
+
+        span {
+            display: none;
+        }
     }
 `;
 
@@ -325,7 +322,10 @@ const ModalOverlay = styled.div`
     animation: fadeIn 0.3s ease;
 `;
 
-const ModalContainer = styled.div`
+
+// --- PART 1 MODAL STYLES ---
+
+const ModalContainerP1 = styled.div`
     background-color: #f0f3f8;
     border-radius: 24px;
     width: 90%;
@@ -347,7 +347,7 @@ const ModalContainer = styled.div`
     }
 `;
 
-const ModalHeader = styled.header`
+const ModalHeaderP1 = styled.header`
     background: linear-gradient(135deg, #4a90e2, #2e6ab8);
     color: white;
     padding: 1rem 1.5rem;
@@ -391,7 +391,7 @@ const ModalHeaderTag = styled.div`
     opacity: 0.8;
 `;
 
-const ModalNewTag = styled.span`
+const ModalNewTagP1 = styled.span`
     background-color: ${({ theme }) => theme.colors.primaryOrange};
     color: white;
     font-size: 0.75rem;
@@ -402,7 +402,7 @@ const ModalNewTag = styled.span`
     margin-left: 1rem;
 `;
 
-const ModalCloseButton = styled.button`
+const ModalCloseButtonP1 = styled.button`
     background: none;
     border: none;
     color: white;
@@ -417,7 +417,7 @@ const ModalCloseButton = styled.button`
     }
 `;
 
-const ModalContent = styled.main`
+const ModalContentP1 = styled.main`
     padding: 1.5rem;
     overflow-y: auto;
     flex-grow: 1;
@@ -426,7 +426,7 @@ const ModalContent = styled.main`
     }
 `;
 
-const QuestionsSection = styled.section`
+const QuestionsSectionP1 = styled.section`
     background-color: ${({ theme }) => theme.colors.cardBg};
     padding: 1.5rem;
     border-radius: 16px;
@@ -455,141 +455,11 @@ const QuestionsSection = styled.section`
     }
 `;
 
-const AnswerSection = styled.section`
+const AnswerSectionP1 = styled.section`
     margin-top: 1.5rem;
 `;
 
-const AnalysisContainer = styled.div`
-    margin-top: 1.5rem;
-    animation: fadeIn 0.4s ease;
-`;
-
-const AnalysisTabNav = styled.nav`
-    display: flex;
-    gap: 0.5rem;
-    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-    margin-bottom: 1.5rem;
-`;
-
-const AnalysisTabButton = styled.button<{ $active?: boolean }>`
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 0.75rem 0.5rem;
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: ${({ theme, $active }) => $active ? theme.colors.header : theme.colors.label};
-    border-bottom: 3px solid ${({ theme, $active }) => $active ? theme.colors.primaryBlue : 'transparent'};
-    margin-bottom: -1px;
-    transition: all 0.2s ease;
-
-    &:hover {
-        color: ${({ theme }) => theme.colors.header};
-    }
-`;
-
-const AnswerContent = styled.div`
-    background-color: ${({ theme }) => theme.colors.cardBg};
-    border: 1px solid ${({ theme }) => theme.colors.border};
-    padding: 1.5rem;
-    border-radius: 16px;
-
-    h4 {
-        margin: 0 0 1rem 0;
-        font-size: 1rem;
-        font-weight: 600;
-        color: #2e6ab8;
-    }
-    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-        padding: 1rem;
-    }
-`;
-
-const QAPair = styled.div`
-    margin-bottom: 1.25rem;
-    &:last-child {
-        margin-bottom: 0;
-    }
-`;
-
-const QAPairAnalysis = styled(QAPair)`
-    border-bottom: 1px dashed ${({ theme }) => theme.colors.border};
-    padding-bottom: 1.5rem;
-`;
-
-const AnswerQuestion = styled.p`
-    font-weight: 600;
-    color: ${({ theme }) => theme.colors.header};
-    margin: 0 0 0.5rem 0;
-    line-height: 1.5;
-`;
-
-const AnswerText = styled.p`
-    margin: 0;
-    line-height: 1.7;
-    color: #34495e;
-`;
-
-const AnalyzedAnswerContainer = styled.p`
-    margin: 0;
-    line-height: 1.8;
-    color: #34495e;
-`;
-
-const Highlight = styled.span<{ type: AnalysisData['type'] }>`
-    background-color: ${({ theme, type }) => theme.colors[`analysis${type.charAt(0).toUpperCase() + type.slice(1)}Bg` as keyof typeof theme.colors]};
-    border-bottom: 2px solid ${({ theme, type }) => theme.colors[`analysis${type.charAt(0).toUpperCase() + type.slice(1)}` as keyof typeof theme.colors]};
-    border-radius: 3px 3px 0 0;
-    padding: 0.1em 0.2em;
-    font-weight: 500;
-`;
-
-const AnalysisDetailsGrid = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1.25rem;
-`;
-
-const AnalysisCardWrapper = styled.div<{ type: AnalysisData['type'] }>`
-    background-color: ${({ theme }) => theme.colors.bg};
-    border: 1px solid ${({ theme }) => theme.colors.border};
-    border-left: 4px solid ${({ theme, type }) => theme.colors[`analysis${type.charAt(0).toUpperCase() + type.slice(1)}` as keyof typeof theme.colors]};
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-`;
-
-const AnalysisCardHeader = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-`;
-
-const AnalysisIconWrapper = styled.div<{ type: AnalysisData['type'] }>`
-    color: ${({ theme, type }) => theme.colors[`analysis${type.charAt(0).toUpperCase() + type.slice(1)}` as keyof typeof theme.colors]};
-    svg {
-        width: 20px;
-        height: 20px;
-    }
-`;
-
-const AnalysisCardText = styled.div`
-    font-weight: 600;
-    color: ${({ theme }) => theme.colors.header};
-    font-size: 1rem;
-`;
-
-const AnalysisCardExplanation = styled.div`
-    font-size: 0.95rem;
-    color: #34495e;
-    line-height: 1.6;
-    padding-left: calc(20px + 0.75rem);
-`;
-
-
-const ModalActions = styled.div`
+const ModalActionsP1 = styled.div`
     display: flex;
     gap: 1rem;
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
@@ -610,14 +480,14 @@ const ActionButton = styled.button<{ isPrimary: boolean }>`
     color: white;
 
     &:hover {
-        background-color: ${({ theme, isPrimary }) => isPrimary ? '#3a7ac2' : '#e88f33'};
+        opacity: 0.9;
     }
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
         padding: 1rem;
     }
 `;
 
-const ModalFooter = styled.footer`
+const ModalFooterP1 = styled.footer`
     padding: 1rem 1.5rem;
     text-align: center;
     border-top: 1px solid ${({ theme }) => theme.colors.border};
@@ -637,6 +507,232 @@ const SecondaryButton = styled.button`
     font-size: 0.9rem;
     &:hover {
         text-decoration: underline;
+    }
+`;
+
+// --- PART 2+3 MODAL STYLES ---
+
+const ModalContainerP2 = styled.div`
+    background-color: ${({ theme }) => theme.colors.bg};
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    animation: slideInMobile 0.35s ease-out;
+`;
+
+const HeaderP2 = styled.header`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    flex-shrink: 0;
+    
+    h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: ${({ theme }) => theme.colors.header};
+    }
+`;
+
+const HeaderButton = styled.button`
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: ${({ theme }) => theme.colors.header};
+`;
+const BackButtonP2 = styled(HeaderButton)``;
+const RefreshButtonP2 = styled(HeaderButton)``;
+
+const ContentP2 = styled.main`
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 1rem 1rem 1rem;
+`;
+
+const CardWrapper = styled.div`
+    background-color: ${({ theme }) => theme.colors.cardYellowBg};
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    display: flex;
+    position: relative;
+    padding-bottom: 1rem;
+`;
+
+const Sidebar = styled.div`
+    background-color: #559bd9;
+    padding: 1.5rem 0.5rem;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+`;
+
+const DateText = styled.p`
+    color: white;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 500;
+    opacity: 0.9;
+    letter-spacing: 1px;
+`;
+
+const MainContent = styled.div`
+    padding: 1rem 1.5rem 1rem 1.25rem;
+    color: ${({ theme }) => theme.colors.text};
+    width: 100%;
+
+    p {
+        margin: 0.5rem 0;
+        line-height: 1.7;
+    }
+`;
+
+const NewTag = styled.div`
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: ${({ theme }) => theme.colors.newTag};
+    color: white;
+    padding: 0.3rem 1rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-radius: 0 16px 0 16px;
+`;
+
+const CardTitle = styled.h2`
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: ${({ theme }) => theme.colors.header};
+    margin: 0.5rem 0 1.5rem 0;
+`;
+
+const PartSection = styled.section`
+    margin-bottom: 1.5rem;
+`;
+
+const PartLabel = styled.div`
+    background-color: #cde4f8;
+    color: #3b87d0;
+    display: inline-block;
+    padding: 0.25rem 0.8rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+`;
+
+const Part2Title = styled.p`
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: ${({ theme }) => theme.colors.header};
+`;
+
+const Part2Prompts = styled.ul`
+    list-style-type: none;
+    padding-left: 1rem;
+    li {
+        position: relative;
+        padding-left: 1rem;
+        margin-bottom: 0.5rem;
+        &:before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: ${({ theme }) => theme.colors.label};
+        }
+    }
+`;
+
+const Part3Questions = styled.ol`
+    padding-left: 1.5rem;
+    li {
+        margin-bottom: 0.75rem;
+        line-height: 1.7;
+    }
+`;
+
+const FooterP2 = styled.footer`
+    flex-shrink: 0;
+    background-color: white;
+    border-top: 1px solid ${({ theme }) => theme.colors.border};
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+`;
+
+const PrevNextNav = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color: ${({ theme }) => theme.colors.label};
+    
+    button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: ${({ theme }) => theme.colors.primaryBlue};
+
+        &:disabled {
+            color: ${({ theme }) => theme.colors.label};
+            cursor: not-allowed;
+        }
+    }
+`;
+
+const MainActions = styled.div`
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+`;
+
+const ActionButtonBase = styled.button`
+    flex: 1;
+    padding: 0.9rem;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    color: white;
+
+    &:hover {
+        opacity: 0.9;
+    }
+`;
+const ActionButtonOrange = styled(ActionButtonBase)`
+    background-color: ${({ theme }) => theme.colors.primaryOrange};
+`;
+const ActionButtonBlue = styled(ActionButtonBase)`
+    background-color: ${({ theme }) => theme.colors.primaryBlue};
+`;
+
+const SupplementaryAction = styled.button`
+    background: none;
+    border: none;
+    color: ${({ theme }) => theme.colors.label};
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover {
+        color: ${({ theme }) => theme.colors.primaryBlue};
     }
 `;
 

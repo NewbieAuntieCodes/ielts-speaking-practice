@@ -16,8 +16,14 @@ export interface CueCardData {
   category: string;
   categoryClass: string;
   status?: 'New';
-  questions?: string[];
+  // Part 1
+  part1Questions?: string[];
   sampleAnswers?: SampleAnswerData[];
+  // Part 2+3
+  part2Title?: string;
+  part2Description?: string;
+  part2Prompts?: string[];
+  part3Questions?: string[];
 }
 
 export interface TopicData {
@@ -38,7 +44,7 @@ export const initialPart1Data: TopicData[] = [
         category: '人物题',
         categoryClass: 'person-card',
         status: 'New',
-        questions: [
+        part1Questions: [
           'Do you have a friend you have known for a long time?',
           'What do you usually do with your friends?',
           'Where do you often meet each other?',
@@ -90,7 +96,7 @@ export const initialPart1Data: TopicData[] = [
         category: '事件题', 
         categoryClass: 'event-card', 
         status: 'New',
-        questions: [
+        part1Questions: [
           'Have you ever worked with old people?',
           'Are you happy to work with people who are older than you?',
           'What are the benefits of being friends with or working with old people?',
@@ -115,7 +121,7 @@ export const initialPart1Data: TopicData[] = [
         category: '地点题', 
         categoryClass: 'place-card', 
         status: 'New',
-        questions: [
+        part1Questions: [
             'Do you think museums are important?',
             'Are there many museums in your hometown?',
             'Do you often visit a museum?',
@@ -134,7 +140,7 @@ export const initialPart1Data: TopicData[] = [
         category: '地点题', 
         categoryClass: 'place-card', 
         status: 'New',
-        questions: [
+        part1Questions: [
             'Is the city where you live crowded?',
             'Is there a crowded place near where you live?',
             'Do you like crowded places?',
@@ -155,7 +161,7 @@ export const initialPart1Data: TopicData[] = [
         category: '地点题', 
         categoryClass: 'place-card', 
         status: 'New',
-        questions: [
+        part1Questions: [
             'Have you ever talked with someone you don\'t know in public places?',
             'Do you wear headphones in public places?',
             'Would you like to see more public places near where you live?',
@@ -180,7 +186,7 @@ export const initialPart1Data: TopicData[] = [
         category: '事件题', 
         categoryClass: 'event-card', 
         status: 'New',
-        questions: [
+        part1Questions: [
             'Did your parents teach you to share when you were a child?',
             'What kind of things do you like to share with others?',
             'What kind of things are not suitable for sharing?',
@@ -203,7 +209,7 @@ export const initialPart1Data: TopicData[] = [
         category: '事件题', 
         categoryClass: 'event-card', 
         status: 'New',
-        questions: [
+        part1Questions: [
             'Have you borrowed books from others?',
             'Have you ever borrowed money from others?',
             'Do you like to lend things to others?',
@@ -224,7 +230,7 @@ export const initialPart1Data: TopicData[] = [
         category: '事件题', 
         categoryClass: 'event-card', 
         status: 'New',
-        questions: [
+        part1Questions: [
             'Do you like chatting with friends?',
             'What do you usually chat about with friends?',
             'Do you prefer to chat with a group of people or with only one friend?',
@@ -262,7 +268,30 @@ export const initialPart2Data: TopicData[] = [
         id: 'box-topic-people',
         title: '话题: 人物题',
         cards: [
-            { id: 'p2-c1', title: 'Describe a person you admire', category: '人物题', categoryClass: 'person-card', status: 'New' },
+            { 
+              id: 'p2-c1', 
+              title: '重要的好朋友',
+              category: '人物题', 
+              categoryClass: 'person-card', 
+              status: 'New',
+              part2Title: 'Describe a good friend who is important to you',
+              part2Description: 'You should say:',
+              part2Prompts: [
+                  'Who he/she is',
+                  'How/where you got to know him/her',
+                  'How long you have known each other',
+                  'And explain why he/she is important to you',
+              ],
+              part3Questions: [
+                  'How do children make friends at school?',
+                  'How do children make friends when they are not at school?',
+                  'Do you think it is better for children to have a few close friends or many casual friends?',
+                  "Do you think a child's relationship with friends can be replaced by that with other people, like parents or other family members?",
+                  'What are the differences between friends made inside and outside the workplace?',
+                  "Do you think it's possible for bosses and their employees to become friends?",
+              ],
+            },
+            { id: 'p2-c1-admire', title: 'Describe a person you admire', category: '人物题', categoryClass: 'person-card', status: 'New' },
         ]
     },
     {

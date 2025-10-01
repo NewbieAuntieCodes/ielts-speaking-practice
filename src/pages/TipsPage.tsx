@@ -369,10 +369,11 @@ const PageContainer = styled.div`
 `;
 
 const PageHeader = styled.header`
+    position: relative;
+    text-align: center;
+    margin-bottom: 2rem;
     display: flex;
     align-items: center;
-    margin-bottom: 2rem;
-    position: relative;
     justify-content: center;
 
     h1 {
@@ -383,12 +384,10 @@ const PageHeader = styled.header`
     }
     
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-        margin-bottom: 2.5rem;
+        margin-bottom: 2rem;
         h1 {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
+            margin: 0 3.5rem; /* Space for back button */
         }
     }
 `;
@@ -421,9 +420,11 @@ const BackButton = styled.button`
         color: ${({ theme }) => theme.colors.header};
     }
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-        position: static;
-        transform: none;
-        margin-bottom: 0.5rem;
+        padding: 0.6rem;
+        gap: 0;
+        span {
+            display: none;
+        }
     }
 `;
 
