@@ -18,9 +18,9 @@ const BackArrowIcon = () => (
 
 const AnalysisIcon = ({ type }: { type: AnalysisData['type'] }) => {
     const icons: { [key in AnalysisData['type']]: React.ReactElement } = {
-        vocab: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>,
-        phrase: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-3-3-4-6-4S1 2 1 5v8c0 7 4 8 7 8Z"></path><path d="M21 21c-3 0-7-1-7-8V5c0-3 3-4 6-4s5 1 5 4v8c0 7-4 8-7 8Z"></path></svg>,
-        sentence: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>,
+        vocab: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>,
+        phrase: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-3-3-4-6-4S1 2 1 5v8c0 7 4 8 7 8Z"></path><path d="M21 21c-3 0-7-1-7-8V5c0-3 3-4 6-4s5 1 5 4v8c0 7-4 8-7 8Z"></path></svg>,
+        sentence: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>,
     };
     return <AnalysisIconWrapper type={type}>{icons[type]}</AnalysisIconWrapper>;
 }
@@ -30,28 +30,39 @@ function escapeRegExp(string: string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-const AnalyzedText: React.FC<{ answer: string; analysis: AnalysisData[] }> = ({ answer, analysis }) => {
+const AnalyzedText: React.FC<{ answer: string | string[]; analysis: AnalysisData[] }> = ({ answer, analysis }) => {
     if (!analysis || analysis.length === 0) {
-        return <p>{answer}</p>;
+        if (Array.isArray(answer)) {
+            return <>{answer.map((p, i) => <AnalyzedAnswerContainer key={i}>{p}</AnalyzedAnswerContainer>)}</>;
+        }
+        return <AnalyzedAnswerContainer>{answer}</AnalyzedAnswerContainer>;
     }
 
     const analysisMap = new Map<string, AnalysisData>();
     analysis.forEach(item => analysisMap.set(item.text, item));
 
-    const regex = new RegExp(`(${analysis.map(item => escapeRegExp(item.text)).join('|')})`, 'g');
-    const parts = answer.split(regex).filter(part => part);
+    const renderParagraph = (paragraph: string, key: React.Key) => {
+        const regex = new RegExp(`(${analysis.map(item => escapeRegExp(item.text)).join('|')})`, 'g');
+        const parts = paragraph.split(regex).filter(part => part);
 
-    return (
-        <AnalyzedAnswerContainer>
-            {parts.map((part, index) => {
-                const analysisItem = analysisMap.get(part);
-                if (analysisItem) {
-                    return <Highlight key={index} type={analysisItem.type}>{part}</Highlight>;
-                }
-                return <span key={index}>{part}</span>;
-            })}
-        </AnalyzedAnswerContainer>
-    );
+        return (
+            <AnalyzedAnswerContainer key={key}>
+                {parts.map((part, index) => {
+                    const analysisItem = analysisMap.get(part);
+                    if (analysisItem) {
+                        return <Highlight key={index} type={analysisItem.type}>{part}</Highlight>;
+                    }
+                    return <span key={index}>{part}</span>;
+                })}
+            </AnalyzedAnswerContainer>
+        );
+    };
+
+    if (Array.isArray(answer)) {
+        return <>{answer.map((p, i) => renderParagraph(p, i))}</>;
+    } else {
+        return renderParagraph(answer, 0);
+    }
 };
 
 // FIX: Added quotes to SVG properties to resolve TypeScript errors where values were being interpreted as variables instead of strings.
@@ -112,10 +123,10 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({ card, navigateTo, handleAdd
             <main>
                 {currentQA ? (
                     <AnswerContent>
-                        <h4>范文精讲 (IELTS 5.5)</h4>
+                        <h4>{currentQA.question.startsWith('Part 2') ? '范文精讲' : '范文精讲 (IELTS 5.5)'}</h4>
                         <QAPairWrapper key={currentIndex}>
                             <QAPairAnalysis>
-                                <AnswerQuestion>{currentIndex + 1}. {currentQA.question}</AnswerQuestion>
+                                <AnswerQuestion>{currentQA.question.startsWith('Part 2') ? currentQA.question : `${currentIndex + 1}. ${currentQA.question}`}</AnswerQuestion>
                                 <AnalyzedText answer={currentQA.answer} analysis={currentQA.analysis || []} />
                                 {currentQA.analysis && currentQA.analysis.length > 0 && (
                                     <AnalysisDetailsGrid>
@@ -260,14 +271,18 @@ const QAPairAnalysis = styled.div`
 const AnswerQuestion = styled.p`
     font-weight: 600;
     color: ${({ theme }) => theme.colors.header};
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 1rem 0;
     line-height: 1.5;
 `;
 
 const AnalyzedAnswerContainer = styled.p`
-    margin: 0;
+    margin: 0 0 1em 0;
     line-height: 1.8;
     color: #34495e;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
 `;
 
 const Highlight = styled.span<{ type: AnalysisData['type'] }>`

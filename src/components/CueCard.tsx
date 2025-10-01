@@ -26,7 +26,11 @@ const CueCard: React.FC<CueCardProps> = ({ card, fromTopicId, onCardClick }) => 
     };
 
     const handleClick = () => {
-        if (card.questions && card.questions.length > 0) {
+        // A card is considered "clickable" if it contains questions to display.
+        // For Part 1, we check for a non-empty `part1Questions` array.
+        // For Part 2/3, we check for the existence of `part2Title`.
+        // This prevents placeholder cards without content from opening an empty modal.
+        if ((card.part1Questions && card.part1Questions.length > 0) || card.part2Title) {
             onCardClick(card);
         }
     };

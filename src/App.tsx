@@ -85,7 +85,7 @@ const GlobalStyles = createGlobalStyle`
         color: ${({ theme }) => theme.colors.text};
         margin: 0;
         font-family: ${({ theme }) => theme.fonts.body};
-        font-size: 16px;
+        font-size: 15px;
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;

@@ -6,7 +6,7 @@ export interface AnalysisData {
 
 export interface SampleAnswerData {
   question: string;
-  answer: string;
+  answer: string | string[];
   analysis?: AnalysisData[];
 }
 
@@ -289,6 +289,81 @@ export const initialPart2Data: TopicData[] = [
                   "Do you think a child's relationship with friends can be replaced by that with other people, like parents or other family members?",
                   'What are the differences between friends made inside and outside the workplace?',
                   "Do you think it's possible for bosses and their employees to become friends?",
+              ],
+              sampleAnswers: [
+                {
+                  question: "Part 2: Describe a good friend who is important to you",
+                  answer: [
+                    "I’d like to talk about a good friend who is very important to me. She is my roommate in school. She is older than me by one year, and she is very tall and beautiful. She is also the first good friend I made when I came to this new school.",
+                    "We first got to know each other because we live in the same dormitory. At the beginning, I felt a bit lonely in the new school, but she always talked with me and made me feel comfortable. We later found out that we have the same hobbies. For example, we both like playing the same games, so our conversations are always fun and interesting.",
+                    "I have known her for about one year. During this time, she has taken good care of me. She often shares snacks with me in the dormitory. When I feel unhappy, she will comfort me and tell some jokes to make me laugh. She also helps me with my studies. For example, if I don’t understand a math problem, she will explain it to me patiently.",
+                    "On weekends or holidays, we usually go shopping together. Sometimes we buy some delicious food like milk tea, cake, or ice cream. Sometimes we buy clothes and take photos together. I always feel happy when I spend time with her.",
+                    "She is important to me because she is not only a good friend but also like a sister. She supports me when I face difficulties and makes my school life more colorful. I really hope our friendship can last forever."
+                  ],
+                  analysis: [
+                    { type: 'phrase', text: 'got to know each other', explanation: '一个非常自然的动词短语，意思是“开始认识对方”，比 "we met" 更具描述性。' },
+                    { type: 'phrase', text: 'made me feel comfortable', explanation: '表达“让我感到自在”，生动地描述了朋友带来的积极影响。' },
+                    { type: 'vocab', text: 'hobbies', explanation: '意为“爱好”，是谈论个人兴趣时的高频词汇。' },
+                    { type: 'phrase', text: 'taken good care of me', explanation: '一个温暖的表达，意思是“把我照顾得很好”，体现了朋友的关心。' },
+                    { type: 'vocab', text: 'comfort', explanation: '动词，意为“安慰”，准确地描述了朋友在自己不开心时所做的事情。' },
+                    { type: 'phrase', text: 'makes my school life more colorful', explanation: '一个生动的比喻，意思是“让我的校园生活更加丰富多彩”，是加分表达。' },
+                    { type: 'phrase', text: 'last forever', explanation: '意思是“永远持续下去”，常用来表达对友谊或感情的美好祝愿。' },
+                  ],
+                },
+                {
+                  question: "How do children make friends at school?",
+                  answer: "In my view, children primarily make friends at school through shared activities and being in the same class. The main reason is that school provides a structured environment where they spend a lot of time together, which naturally leads to interaction. For instance, they might become friends with the person sitting next to them, or with teammates in a sports club like basketball, because they have to cooperate and communicate regularly.",
+                  analysis: [
+                    { type: 'phrase', text: 'In my view', explanation: ' (Point) - 这是表明个人观点的常用短语，是 PRE 结构的一个很好的开始。' },
+                    { type: 'phrase', text: 'The main reason is that', explanation: ' (Reason) - 清晰地引出解释，让你的论述更有条理。' },
+                    { type: 'phrase', text: 'For instance', explanation: ' (Example) - 引出具体例子来支撑你的理由，使回答更有说服力。' },
+                  ],
+                },
+                {
+                    question: "How do children make friends when they are not at school?",
+                    answer: "I believe that outside of school, children often make friends through neighborhood connections or organized extracurricular activities. This is because these settings offer chances to meet peers who share similar interests or live in the same area. For example, a child might befriend others who live on the same street and play together in a local park. Also, joining a weekend piano class can lead to new friendships.",
+                    analysis: [
+                        { type: 'phrase', text: 'I believe that', explanation: '(Point) - 用来引出你的主要观点。' },
+                        { type: 'sentence', text: 'This is because these settings offer chances to meet peers who share similar interests.', explanation: '(Reason) - 解释为什么这些地方是交朋友的好机会，逻辑清晰。' },
+                        { type: 'phrase', text: 'For example', explanation: '(Example) - 提供具体的例子，如在公园玩或上钢琴课，让回答更具体。' }
+                    ]
+                },
+                {
+                    question: "Do you think it is better for children to have a few close friends or many casual friends?",
+                    answer: "I think it's more beneficial for children to have a few close friends. The primary reason is that close friendships provide deeper emotional support and help children develop important social skills like trust and empathy. For example, a child with one or two best friends has someone they can confide in when they are sad. This is more valuable for their emotional development than having many acquaintances.",
+                    analysis: [
+                        { type: 'sentence', text: "I think it's more beneficial for children to have a few close friends.", explanation: '(Point) - 直接明了地回答问题，表明你的立场。' },
+                        { type: 'vocab', text: 'emotional support', explanation: '(Reason) - “情感支持”，一个很好的词组，解释了亲密友谊的核心价值。' },
+                        { type: 'phrase', text: 'confide in', explanation: '(Example) - “向……倾诉”，动词短语，用在例子中非常贴切，展示了词汇量。' }
+                    ]
+                },
+                {
+                    question: "Do you think a child's relationship with friends can be replaced by that with other people, like parents or other family members?",
+                    answer: "In my opinion, relationships with family members cannot completely replace friendships. This is because friends offer a different type of relationship based on peer equality, which is crucial for developing a social identity. For instance, a child learns how to negotiate and resolve conflicts with friends in a way they wouldn't with their parents. These peer interactions are an essential part of growing up.",
+                    analysis: [
+                        { type: 'phrase', text: 'In my opinion', explanation: '(Point) - 开始回答，清晰地表达你的观点。' },
+                        { type: 'vocab', text: 'peer equality', explanation: '(Reason) - “同伴间的平等”，一个非常准确的术语，点出了友谊和亲子关系的关键区别。' },
+                        { type: 'phrase', text: 'resolve conflicts', explanation: '(Example) - “解决冲突”，用具体的例子说明孩子们能从朋友那里学到什么。' }
+                    ]
+                },
+                {
+                    question: "What are the differences between friends made inside and outside the workplace?",
+                    answer: "I'd say there are several key differences, mainly about the context of the relationship. Workplace friendships are often formed based on shared professional experiences, while friendships outside of work are typically based on personal interests. For example, you might be friendly with a colleague because you work on the same projects. In contrast, a friend you made in a hiking group shares a personal passion, and the bond is often less formal.",
+                    analysis: [
+                        { type: 'sentence', text: "I'd say there are several key differences...", explanation: '(Point) - 直接回答问题，并预告你将要讨论的内容。' },
+                        { type: 'phrase', text: 'based on', explanation: '(Reason) - 一个非常有用的短语，用来解释两种友谊的基础有何不同。' },
+                        { type: 'vocab', text: 'colleague', explanation: '(Example) - “同事”，工作场景下的高频词汇。' }
+                    ]
+                },
+                {
+                    question: "Do you think it's possible for bosses and their employees to become friends?",
+                    answer: "Yes, I think it's possible, but it can be complicated. The reason is the inherent power imbalance in the boss-employee relationship can make a genuine friendship difficult. For example, if a manager is close friends with one employee, other team members might feel it's unfair when it comes to promotions. To make it work, they must maintain clear boundaries.",
+                    analysis: [
+                        { type: 'vocab', text: 'complicated', explanation: '(Point) - “复杂的”，一个很好的词来概括这种情况，展示了你思考的深度。' },
+                        { type: 'phrase', text: 'power imbalance', explanation: '(Reason) - “权力不平衡”，一个高级词组，准确地指出了问题的核心。' },
+                        { type: 'phrase', text: 'maintain clear boundaries', explanation: '(Example) - “保持清晰的界限”，一个地道的表达，说明了如何处理这种复杂关系。' }
+                    ]
+                }
               ],
             },
             { id: 'p2-c1-admire', title: 'Describe a person you admire', category: '人物题', categoryClass: 'person-card', status: 'New' },

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import TopicContainer from '../components/TopicContainer';
 import { initialPart1Data, initialPart2Data, CueCardData } from '../data';
@@ -22,7 +22,7 @@ const BackArrowIcon = () => (
 );
 
 const HelmIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
         <circle cx="12" cy="12" r="3" />
         <line x1="12" y1="2" x2="12" y2="5" />
@@ -36,11 +36,18 @@ const HelmIcon = () => (
     </svg>
 );
 
-const PrevIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>;
-const NextIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>;
+const PrevIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>;
+const NextIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>;
 
 
 const TopicModal: React.FC<TopicModalProps> = ({ card, onClose, navigateToAnalysis }) => {
+    const [currentView, setCurrentView] = useState<'part2' | 'part3'>('part2');
+
+    // Reset view to Part 2 when the card changes, ensuring a fresh start.
+    useEffect(() => {
+        setCurrentView('part2');
+    }, [card.id]);
+
     const handleModalContentClick = (e: React.MouseEvent) => {
         e.stopPropagation();
     };
@@ -62,9 +69,14 @@ const TopicModal: React.FC<TopicModalProps> = ({ card, onClose, navigateToAnalys
             <ModalOverlay onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="modal-title-p2">
                  <ModalContainerP2 onClick={handleModalContentClick}>
                      <HeaderP2>
-                        <BackButtonP2 onClick={onClose} aria-label="返回"><BackArrowIcon /></BackButtonP2>
-                        <h3>P2&P3题卡</h3>
-                        <RefreshButtonP2 aria-label="刷新"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L20.5 10a5 5 0 0 0-7.82 5.42L11 17.5"/></svg></RefreshButtonP2>
+                        <BackButtonP2 
+                            onClick={currentView === 'part2' ? onClose : () => setCurrentView('part2')} 
+                            aria-label={currentView === 'part2' ? "返回" : "返回 Part 2"}
+                        >
+                            <BackArrowIcon />
+                        </BackButtonP2>
+                        <h3>{currentView === 'part2' ? 'P2 题卡' : 'P3 题卡'}</h3>
+                        <RefreshButtonP2 aria-label="刷新"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L20.5 10a5 5 0 0 0-7.82 5.42L11 17.5"/></svg></RefreshButtonP2>
                      </HeaderP2>
                      <ContentP2>
                         <CardWrapper>
@@ -77,21 +89,25 @@ const TopicModal: React.FC<TopicModalProps> = ({ card, onClose, navigateToAnalys
                                 
                                 <CardTitle id="modal-title-p2">{card.title}</CardTitle>
                                 
-                                <PartSection>
-                                    <PartLabel>Part 2</PartLabel>
-                                    <Part2Title>{card.part2Title}</Part2Title>
-                                    <p><strong>{card.part2Description}</strong></p>
-                                    <Part2Prompts>
-                                        {card.part2Prompts?.map((prompt, i) => <li key={i}>{prompt}</li>)}
-                                    </Part2Prompts>
-                                </PartSection>
+                                {currentView === 'part2' && (
+                                    <PartSection>
+                                        <PartLabel>Part 2</PartLabel>
+                                        <Part2Title>{card.part2Title}</Part2Title>
+                                        <p><strong>{card.part2Description}</strong></p>
+                                        <Part2Prompts>
+                                            {card.part2Prompts?.map((prompt, i) => <li key={i}>{prompt}</li>)}
+                                        </Part2Prompts>
+                                    </PartSection>
+                                )}
 
-                                <PartSection>
-                                    <PartLabel>Part 3</PartLabel>
-                                    <Part3Questions>
-                                         {card.part3Questions?.map((q, i) => <li key={i}>{q}</li>)}
-                                    </Part3Questions>
-                                </PartSection>
+                                {currentView === 'part3' && (
+                                    <PartSection>
+                                        <PartLabel>Part 3</PartLabel>
+                                        <Part3Questions>
+                                             {card.part3Questions?.map((q, i) => <li key={i}>{q}</li>)}
+                                        </Part3Questions>
+                                    </PartSection>
+                                )}
                              </MainContent>
                         </CardWrapper>
                      </ContentP2>
@@ -102,7 +118,11 @@ const TopicModal: React.FC<TopicModalProps> = ({ card, onClose, navigateToAnalys
                         </PrevNextNav>
                          <MainActions>
                              <ActionButtonOrange onClick={handleAnalysisClick}>参考答案</ActionButtonOrange>
-                             <ActionButtonBlue>立即练习</ActionButtonBlue>
+                             {currentView === 'part2' ? (
+                                <ActionButtonBlue onClick={() => setCurrentView('part3')}>查看 Part 3 问题</ActionButtonBlue>
+                             ) : (
+                                <ActionButtonBlue>立即练习</ActionButtonBlue>
+                             )}
                          </MainActions>
                          <SupplementaryAction>我要补充</SupplementaryAction>
                      </FooterP2>
@@ -616,6 +636,7 @@ const CardTitle = styled.h2`
 
 const PartSection = styled.section`
     margin-bottom: 1.5rem;
+    animation: fadeIn 0.4s ease;
 `;
 
 const PartLabel = styled.div`
