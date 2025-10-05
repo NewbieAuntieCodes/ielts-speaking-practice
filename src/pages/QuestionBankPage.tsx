@@ -14,13 +14,15 @@ interface TopicModalProps {
     navigateToAnalysis: (card: CueCardData) => void;
 }
 
+// FIX: Self-closed SVG elements (<line>, <polyline>) to be valid JSX.
 const BackArrowIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="19" y1="12" x2="5" y2="12"></line>
-        <polyline points="12 19 5 12 12 5"></polyline>
+        <line x1="19" y1="12" x2="5" y2="12" />
+        <polyline points="12 19 5 12 12 5" />
     </svg>
 );
 
+// FIX: Self-closed SVG elements (<circle>, <line>) to be valid JSX.
 const HelmIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
@@ -36,8 +38,10 @@ const HelmIcon = () => (
     </svg>
 );
 
-const PrevIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>;
-const NextIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>;
+// FIX: Self-closed SVG <polyline> element to be valid JSX.
+const PrevIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>;
+// FIX: Self-closed SVG <polyline> element to be valid JSX.
+const NextIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>;
 
 
 const TopicModal: React.FC<TopicModalProps> = ({ card, onClose, navigateToAnalysis }) => {
@@ -76,7 +80,8 @@ const TopicModal: React.FC<TopicModalProps> = ({ card, onClose, navigateToAnalys
                             <BackArrowIcon />
                         </BackButtonP2>
                         <h3>{currentView === 'part2' ? 'P2 题卡' : 'P3 题卡'}</h3>
-                        <RefreshButtonP2 aria-label="刷新"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L20.5 10a5 5 0 0 0-7.82 5.42L11 17.5"/></svg></RefreshButtonP2>
+                        {/* FIX: Self-closed SVG <path> elements to be valid JSX. */}
+                        <RefreshButtonP2 aria-label="刷新"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 4v6h-6" /><path d="M1 20v-6h6" /><path d="M3.51 9a9 9 0 0 1 14.85-3.36L20.5 10a5 5 0 0 0-7.82 5.42L11 17.5" /></svg></RefreshButtonP2>
                      </HeaderP2>
                      <ContentP2>
                         <CardWrapper>
@@ -143,7 +148,8 @@ const TopicModal: React.FC<TopicModalProps> = ({ card, onClose, navigateToAnalys
                     </div>
                      {card.status === 'New' && <ModalNewTagP1>新题</ModalNewTagP1>}
                     <ModalCloseButtonP1 onClick={onClose} aria-label="关闭">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        {/* FIX: Self-closed SVG <line> elements to be valid JSX. */}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                     </ModalCloseButtonP1>
                 </ModalHeaderP1>
                 <ModalContentP1>

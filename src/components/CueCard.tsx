@@ -6,9 +6,10 @@ interface CueCardProps {
     card: CueCardData;
     fromTopicId: string;
     onCardClick: (card: CueCardData) => void;
+    onCardMove: (draggedCardId: string, fromTopicId: string, toTopicId: string, targetCardId: string, insertBefore: boolean) => void;
 }
 
-const CueCard: React.FC<CueCardProps> = ({ card, fromTopicId, onCardClick }) => {
+const CueCard: React.FC<CueCardProps> = ({ card, fromTopicId, onCardClick, onCardMove }) => {
     
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
         e.stopPropagation(); // Prevent card click from firing
@@ -35,6 +36,45 @@ const CueCard: React.FC<CueCardProps> = ({ card, fromTopicId, onCardClick }) => 
         }
     };
 
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const target = e.currentTarget as HTMLDivElement;
+        const rect = target.getBoundingClientRect();
+        const insertBefore = e.clientY < rect.top + rect.height / 2;
+
+        target.classList.remove('drag-over-top', 'drag-over-bottom');
+
+        const draggedCardId = e.dataTransfer.getData('cardId');
+        const draggedFromTopicId = e.dataTransfer.getData('fromTopicId');
+        
+        if (draggedCardId && draggedCardId !== card.id) {
+            onCardMove(draggedCardId, draggedFromTopicId, fromTopicId, card.id, insertBefore);
+        }
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const target = e.currentTarget as HTMLDivElement;
+        const rect = target.getBoundingClientRect();
+        const isTopHalf = e.clientY < rect.top + rect.height / 2;
+
+        if (isTopHalf) {
+            target.classList.add('drag-over-top');
+            target.classList.remove('drag-over-bottom');
+        } else {
+            target.classList.add('drag-over-bottom');
+            target.classList.remove('drag-over-top');
+        }
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        const target = e.currentTarget as HTMLDivElement;
+        target.classList.remove('drag-over-top', 'drag-over-bottom');
+    };
+
     return (
         <CueCardWrapper
             categoryClass={card.categoryClass}
@@ -42,6 +82,9 @@ const CueCard: React.FC<CueCardProps> = ({ card, fromTopicId, onCardClick }) => 
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
             onClick={handleClick}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleClick()}
@@ -126,10 +169,33 @@ const CueCardWrapper = styled.div<{ categoryClass: string }>`
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    position: relative; /* Needed for status tag */
+    position: relative; /* Needed for status tag and drag-over indicator */
     border-left: 6px solid;
 
     ${categoryStyles}
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background-color: ${({ theme }) => theme.colors.dragOverBorder};
+        border-radius: 2px;
+        transform: scaleX(0);
+        transition: transform 0.2s ease-in-out;
+        z-index: 1;
+    }
+
+    &.drag-over-top::before {
+        top: -8px; 
+        transform: scaleX(1);
+    }
+
+    &.drag-over-bottom::before {
+        bottom: -8px;
+        transform: scaleX(1);
+    }
 
     &:hover {
         transform: translateY(-3px);

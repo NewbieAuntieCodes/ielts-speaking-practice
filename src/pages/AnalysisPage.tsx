@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { styled, keyframes } from 'styled-components';
-import { CueCardData, AnalysisData } from '../data';
+import { CueCardData, AnalysisData, AnswerVersion } from '../data';
 
 interface AnalysisPageProps {
     card: CueCardData;
@@ -9,18 +9,20 @@ interface AnalysisPageProps {
     cleanWord: (text: string) => string | null;
 }
 
+// FIX: Self-closed SVG elements (<line>, <polyline>) to be valid JSX.
 const BackArrowIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="19" y1="12" x2="5" y2="12"></line>
-        <polyline points="12 19 5 12 12 5"></polyline>
+        <line x1="19" y1="12" x2="5" y2="12" />
+        <polyline points="12 19 5 12 12 5" />
     </svg>
 );
 
+// FIX: Self-closed SVG elements (<path>, <line>) to be valid JSX.
 const AnalysisIcon = ({ type }: { type: AnalysisData['type'] }) => {
     const icons: { [key in AnalysisData['type']]: React.ReactElement } = {
-        vocab: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>,
-        phrase: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-3-3-4-6-4S1 2 1 5v8c0 7 4 8 7 8Z"></path><path d="M21 21c-3 0-7-1-7-8V5c0-3 3-4 6-4s5 1 5 4v8c0 7-4 8-7 8Z"></path></svg>,
-        sentence: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>,
+        vocab: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>,
+        phrase: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-3-3-4-6-4S1 2 1 5v8c0 7 4 8 7 8Z" /><path d="M21 21c-3 0-7-1-7-8V5c0-3 3-4 6-4s5 1 5 4v8c0 7-4 8-7 8Z" /></svg>,
+        sentence: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>,
     };
     return <AnalysisIconWrapper type={type}>{icons[type]}</AnalysisIconWrapper>;
 }
@@ -65,8 +67,8 @@ const AnalyzedText: React.FC<{ answer: string | string[]; analysis: AnalysisData
     }
 };
 
-// FIX: Added quotes to SVG properties to resolve TypeScript errors where values were being interpreted as variables instead of strings.
-const AddIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
+// FIX: Self-closed SVG <line> elements to be valid JSX.
+const AddIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>;
 
 const AnalysisDetailCard: React.FC<{ item: AnalysisData; handleAddWord: (word: string) => void; cleanWord: (text: string) => string | null; }> = ({ item, handleAddWord, cleanWord }) => {
     
@@ -93,6 +95,7 @@ const AnalysisDetailCard: React.FC<{ item: AnalysisData; handleAddWord: (word: s
 
 const AnalysisPage: React.FC<AnalysisPageProps> = ({ card, navigateTo, handleAddWord, cleanWord }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [selectedScore, setSelectedScore] = useState('5.5');
 
     const hasSampleAnswers = card.sampleAnswers && card.sampleAnswers.length > 0;
     const totalAnswers = hasSampleAnswers ? card.sampleAnswers!.length : 0;
@@ -111,6 +114,14 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({ card, navigateTo, handleAdd
     
     const currentQA = hasSampleAnswers ? card.sampleAnswers![currentIndex] : null;
 
+    const availableScores = currentQA?.versions?.map(v => v.score) ?? [];
+    
+    // If the selected score isn't available for the current question, default to the first one.
+    const effectiveScore = availableScores.includes(selectedScore) ? selectedScore : availableScores[0];
+
+    const currentVersion = currentQA?.versions?.find(v => v.score === effectiveScore);
+
+
     return (
         <PageContainer>
             <PageHeader>
@@ -123,24 +134,43 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({ card, navigateTo, handleAdd
             <main>
                 {currentQA ? (
                     <AnswerContent>
-                        <h4>{currentQA.question.startsWith('Part 2') ? '范文精讲' : '范文精讲 (IELTS 5.5)'}</h4>
-                        <QAPairWrapper key={currentIndex}>
-                            <QAPairAnalysis>
-                                <AnswerQuestion>{currentQA.question.startsWith('Part 2') ? currentQA.question : `${currentIndex + 1}. ${currentQA.question}`}</AnswerQuestion>
-                                <AnalyzedText answer={currentQA.answer} analysis={currentQA.analysis || []} />
-                                {currentQA.analysis && currentQA.analysis.length > 0 && (
-                                    <AnalysisDetailsGrid>
-                                        {currentQA.analysis.map((item, idx) => (
-                                            <AnalysisDetailCard 
-                                                key={idx} 
-                                                item={item} 
-                                                handleAddWord={handleAddWord}
-                                                cleanWord={cleanWord}
-                                            />
-                                        ))}
-                                    </AnalysisDetailsGrid>
-                                )}
-                            </QAPairAnalysis>
+                        <h4>{currentQA.question.startsWith('Part 2') ? '范文精讲' : `范文精讲 (IELTS ${effectiveScore})`}</h4>
+                        
+                        {availableScores.length > 1 && (
+                            <ScoreSelector>
+                                {availableScores.map(score => (
+                                    <ScoreButton
+                                        key={score}
+                                        $active={score === effectiveScore}
+                                        onClick={() => setSelectedScore(score)}
+                                    >
+                                        IELTS {score}
+                                    </ScoreButton>
+                                ))}
+                            </ScoreSelector>
+                        )}
+
+                        <QAPairWrapper key={`${currentIndex}-${effectiveScore}`}>
+                            {currentVersion ? (
+                                <QAPairAnalysis>
+                                    <AnswerQuestion>{currentQA.question.startsWith('Part 2') ? currentQA.question : `${currentIndex + 1}. ${currentQA.question}`}</AnswerQuestion>
+                                    <AnalyzedText answer={currentVersion.answer} analysis={currentVersion.analysis || []} />
+                                    {currentVersion.analysis && currentVersion.analysis.length > 0 && (
+                                        <AnalysisDetailsGrid>
+                                            {currentVersion.analysis.map((item, idx) => (
+                                                <AnalysisDetailCard 
+                                                    key={idx} 
+                                                    item={item} 
+                                                    handleAddWord={handleAddWord}
+                                                    cleanWord={cleanWord}
+                                                />
+                                            ))}
+                                        </AnalysisDetailsGrid>
+                                    )}
+                                </QAPairAnalysis>
+                            ) : (
+                                <p>暂无此分数段范文。</p>
+                            )}
                         </QAPairWrapper>
 
                         {totalAnswers > 1 && (
@@ -168,11 +198,11 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({ card, navigateTo, handleAdd
 const fadeInAnimation = keyframes`
   from {
     opacity: 0;
-    transform: translateX(15px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
 `;
 
@@ -257,6 +287,33 @@ const AnswerContent = styled.div`
     }
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
         padding: 1rem;
+    }
+`;
+
+const ScoreSelector = styled.div`
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+    flex-wrap: wrap;
+`;
+
+const ScoreButton = styled.button<{ $active: boolean }>`
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.5rem 1.2rem;
+    border-radius: 9999px;
+    border: 1px solid ${({ theme }) => theme.colors.border};
+    background-color: ${({ theme, $active }) => $active ? theme.colors.primaryOrange : theme.colors.cardBg};
+    color: ${({ theme, $active }) => $active ? 'white' : theme.colors.label};
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        border-color: ${({ theme, $active }) => $active ? theme.colors.primaryOrange : theme.colors.header};
+        color: ${({ theme, $active }) => $active ? 'white' : theme.colors.header};
     }
 `;
 

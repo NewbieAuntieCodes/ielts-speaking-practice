@@ -5,35 +5,38 @@ interface TipsPageProps {
     navigateTo: (page: 'home') => void;
 }
 
+// FIX: Self-closed SVG elements (<line>, <polyline>) to be valid JSX.
 const BackArrowIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
 );
 
+// FIX: Self-closed SVG <path> elements to be valid JSX.
 const LightbulbIcon = () => (
      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 13a6 6 0 0 1-6 6 6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6z"></path>
-        <path d="M12 19v2"></path><path d="M12 3v2"></path>
-        <path d="M5 12H3"></path><path d="M21 12h-2"></path>
-        <path d="m18.36 18.36-.78-.78"></path>
-        <path d="m6.42 6.42-.78-.78"></path>
-        <path d="m18.36 5.64-.78.78"></path>
-        <path d="m6.42 17.58-.78.78"></path>
+        <path d="M18 13a6 6 0 0 1-6 6 6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6z" />
+        <path d="M12 19v2" /><path d="M12 3v2" />
+        <path d="M5 12H3" /><path d="M21 12h-2" />
+        <path d="m18.36 18.36-.78-.78" />
+        <path d="m6.42 6.42-.78-.78" />
+        <path d="m18.36 5.64-.78.78" />
+        <path d="m6.42 17.58-.78.78" />
     </svg>
 );
 
+// FIX: Self-closed SVG elements to be valid JSX.
 const PromptIcon = ({ type }: { type: string }) => {
-    // FIX: Changed JSX.Element to React.JSX.Element to fix "Cannot find namespace 'JSX'" error.
     const icons: { [key: string]: React.JSX.Element } = {
-        who: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>,
-        what: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>,
-        where: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>,
-        when: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>,
-        why: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>,
-        'why-not': <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>,
-        how: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>,
-        point: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>,
+        who: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>,
+        what: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>,
+        where: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>,
+        when: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>,
+        why: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>,
+        'why-not': <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>,
+        how: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>,
+        point: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>,
+        point2: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>,
         reason: <LightbulbIcon />,
-        example: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>,
+        example: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>,
     };
     return icons[type] || icons['what'];
 };
@@ -60,31 +63,6 @@ const examples5w1h = [
             { id: 'when', text: 'When' },
         ]
     },
-    {
-        label: '近期旅行',
-        question: 'Tell me about a recent trip you took.',
-        prompts: [
-            { id: 'when', title: 'When? (何时去?)', text: '描述旅行发生的时间，展示正确的时态。', keywords: ['last month', 'during the summer', 'for three days'] },
-            { id: 'what', title: 'What? (做什么?)', text: '直接回答问题核心，这是一次什么样的旅行？', keywords: ['a weekend getaway', 'a family vacation', 'sightseeing'] },
-            { id: 'who', title: 'Who? (和谁去?)', text: '补充和谁一起去的，让故事更完整。', keywords: ['with my family', 'by myself', 'with friends'] },
-            { id: 'where', title: 'Where? (去哪里?)', text: '说出你去的具体地点，让回答更具体。', keywords: ['a coastal city', 'the mountains', 'Hangzhou'] },
-            { id: 'why', title: 'Why? (为什么去?)', text: '解释你为什么要去那里，体现你的动机。', keywords: ['to relax', 'celebrate a birthday', 'see the scenery'] },
-            { id: 'how', title: 'How? (感觉如何?)', text: '描述你在旅途中的感受，增加情感色彩。', keywords: ['felt refreshed', 'a wonderful time', 'it was amazing'] },
-        ],
-        answer: () => (
-            <p>
-                Sure. <Highlight type="when">Last month</Highlight>, I went on <Highlight type="what">a short weekend trip</Highlight> <Highlight type="who">with my family</Highlight> to <Highlight type="where">Hangzhou, a famous city not far from here</Highlight>. I went mainly <Highlight type="why">to relax and escape the stress from work for a couple of days</Highlight>. Overall, I <Highlight type="how">had a wonderful time and felt so refreshed</Highlight>.
-            </p>
-        ),
-        legend: [
-            { id: 'when', text: 'When' },
-            { id: 'what', text: 'What' },
-            { id: 'who', text: 'Who' },
-            { id: 'where', text: 'Where' },
-            { id: 'why', text: 'Why' },
-            { id: 'how', text: 'How' },
-        ]
-    }
 ];
 
 const preExamples = [
@@ -107,17 +85,20 @@ const preExamples = [
             { id: 'example', text: 'Example' },
         ]
     },
+];
+
+const prePart3Examples = [
     {
-        label: '工作',
-        question: 'Do you like your job?',
+        label: '出国旅行',
+        question: "Do you think it's important for people to travel to other countries?",
         prompts: [
-            { id: 'point', title: 'P - Point (观点)', text: '直接、清晰地陈述你的核心观点。', keywords: ["Yes, I enjoy my job a lot.", "To be honest, it's okay."] },
-            { id: 'reason', title: 'R - Reason (理由)', text: '解释你持有该观点的原因。', keywords: ["The work is meaningful.", "My colleagues are great."] },
-            { id: 'example', title: 'E - Example (例子)', text: '给出一个具体的例子来支撑你的理由。', keywords: ['For example,', 'Specifically,'] },
+            { id: 'point', title: 'P - Point (观点)', text: '明确地陈述你的观点。', keywords: ["Yes, I believe it's extremely important.", "I think it is beneficial, but not essential."] },
+            { id: 'reason', title: 'R - Reason (理由)', text: '解释你为什么这么认为。', keywords: ["because it broadens our horizons...", "it helps us understand different cultures."] },
+            { id: 'example', title: 'E - Example (例子)', text: '提供一个具体的例子来支持你的理由。', keywords: ['For example, when I visited...', 'To illustrate this...'] },
         ],
         answer: () => (
             <p>
-                <Highlight type="point">Yes, for the most part, I really enjoy my job</Highlight>. <Highlight type="reason">I think the main reason is that I find the work itself very meaningful, and my colleagues are fantastic</Highlight>. <Highlight type="example">For example, last week we finished a really challenging project, and the sense of accomplishment was incredible. Everyone on the team was so supportive, which made a huge difference</Highlight>.
+                <Highlight type="point">Yes, I believe it's incredibly important for people to travel internationally</Highlight>. <Highlight type="reason">The main reason is that it broadens our horizons and fosters a deeper understanding of different cultures in a way that reading books or watching documentaries simply cannot</Highlight>. <Highlight type="example">For instance, before visiting Japan, I had a very stereotypical image of the country. But after spending time there, interacting with local people and experiencing their daily life, I gained a much more nuanced and respectful perspective on their culture. That kind of personal experience is truly invaluable</Highlight>.
             </p>
         ),
         legend: [
@@ -125,17 +106,30 @@ const preExamples = [
             { id: 'reason', text: 'Reason' },
             { id: 'example', text: 'Example' },
         ]
-    }
+    },
 ];
 
 
 const idToPromptType: {[key: string]: string} = {
     what: 'what', where: 'where', when: 'when',
     why: 'why', 'why-not': 'whyNot', how: 'how', who: 'who',
-    point: 'point', reason: 'reason', example: 'example'
+    point: 'point', point2: 'point', reason: 'reason', example: 'example'
 };
 
-const Part1Tips: React.FC = () => {
+const renderPromptCard = (prompt: typeof examples5w1h[0]['prompts'][0]) => (
+    <PromptCardV2 key={prompt.id} type={idToPromptType[prompt.id]}>
+        <PromptHeader>
+            <PromptIcon type={prompt.id} />
+            <strong>{prompt.title}</strong>
+        </PromptHeader>
+        <p>{prompt.text}</p>
+        <PromptKeywords>
+            {prompt.keywords.map(kw => <code key={kw}>{kw}</code>)}
+        </PromptKeywords>
+    </PromptCardV2>
+);
+
+const Part1TipsContent: React.FC = () => {
     const [exampleIndex, setExampleIndex] = useState(0);
     const [preExampleIndex, setPreExampleIndex] = useState(0);
     const [activeSkill, setActiveSkill] = useState<'5w1h' | 'pre'>('5w1h');
@@ -143,22 +137,14 @@ const Part1Tips: React.FC = () => {
     const current5w1hExample = examples5w1h[exampleIndex];
     const currentPreExample = preExamples[preExampleIndex];
 
-    const renderPromptCard = (prompt: typeof current5w1hExample.prompts[0]) => (
-        <PromptCardV2 key={prompt.id} type={idToPromptType[prompt.id]}>
-            <PromptHeader>
-                <PromptIcon type={prompt.id} />
-                <strong>{prompt.title}</strong>
-            </PromptHeader>
-            <p>{prompt.text}</p>
-            <PromptKeywords>
-                {prompt.keywords.map(kw => <code key={kw}>{kw}</code>)}
-            </PromptKeywords>
-        </PromptCardV2>
-    );
-
     return (
-        <TipsContentV2>
-             <SkillNavContainer>
+        <ContentWrapper>
+            <IntroSection>
+                <h3>Part 1: 快速、连贯地回答</h3>
+                <p>在 Part 1 中，目标是给出长度适中（3-5句话）、内容清晰的回答。考官希望看到你能够轻松地谈论日常话题。以下两个技巧将帮助你轻松扩展答案，避免回答过短或逻辑混乱。</p>
+            </IntroSection>
+
+            <SkillNavContainer>
                 <SkillNavButton $active={activeSkill === '5w1h'} onClick={() => setActiveSkill('5w1h')}>
                     技巧一: 5W1H 扩展法
                 </SkillNavButton>
@@ -169,169 +155,235 @@ const Part1Tips: React.FC = () => {
 
             {activeSkill === '5w1h' && (
                 <div key="5w1h" style={{ animation: 'fadeIn 0.4s ease' }}>
-                    <IntroSection>
-                        <h3>核心技巧一: 5W1H 内容扩展法</h3>
-                        <p>在 Part 1 中，最常见的错误是回答过短。5W1H 方法可以帮助你轻松地扩展答案，使其内容丰富、结构清晰，向考官展示你的语言能力。</p>
-                    </IntroSection>
-
-                     <ExampleSelectorContainer>
-                        {examples5w1h.map((example, index) => (
-                            <ExampleSelectorButton
-                                key={index}
-                                $active={exampleIndex === index}
-                                onClick={() => setExampleIndex(index)}
-                            >
-                                {`例子 ${index + 1}: ${example.label}`}
-                            </ExampleSelectorButton>
-                        ))}
-                    </ExampleSelectorContainer>
-
                     <GuideContainer>
-                        <div>
-                            <StepHeader>
-                                <StepNumber>1</StepNumber>
-                                <StepTitle>审题：分析问题</StepTitle>
-                            </StepHeader>
-                            <FlowQuestion>{current5w1hExample.question}</FlowQuestion>
-                        </div>
-
+                        <StepHeader>
+                            <StepNumber>1</StepNumber>
+                            <StepTitle>审题：分析问题</StepTitle>
+                        </StepHeader>
+                        <FlowQuestion>{current5w1hExample.question}</FlowQuestion>
                         <StepDivider />
-
-                        <div>
-                            <StepHeader>
-                                <StepNumber>2</StepNumber>
-                                <StepTitle>拆解：用 5W1H 扩展思路</StepTitle>
-                            </StepHeader>
-                            <StepDescription>围绕问题，从不同角度发散思考。每个角度都能成为你答案的一部分。</StepDescription>
-                            <PromptsGridV2>
-                                {current5w1hExample.prompts.map(renderPromptCard)}
-                            </PromptsGridV2>
-                        </div>
-                        
+                        <StepHeader>
+                            <StepNumber>2</StepNumber>
+                            <StepTitle>拆解：用 5W1H 扩展思路</StepTitle>
+                        </StepHeader>
+                        <StepDescription>围绕问题，从不同角度发散思考。每个角度都能成为你答案的一部分。</StepDescription>
+                        <PromptsGridV2>
+                            {current5w1hExample.prompts.map(renderPromptCard)}
+                        </PromptsGridV2>
                         <StepDivider />
-
-                        <div>
-                            <StepHeader>
-                                <StepNumber>3</StepNumber>
-                                <StepTitle>组合：组织成一个完整的答案</StepTitle>
-                            </StepHeader>
-                            <StepDescription>将刚才的思路点串联起来，形成一段流暢、详细的回答。</StepDescription>
-                            <FinalAnswerBox>{current5w1hExample.answer()}</FinalAnswerBox>
-                            <AnswerLegend>
-                                {current5w1hExample.legend.map(item => (
-                                    <LegendItem key={item.id}>
-                                        <LegendColorBox type={idToPromptType[item.id]} />
-                                        {item.text}
-                                    </LegendItem>
-                                ))}
-                            </AnswerLegend>
-                        </div>
+                        <StepHeader>
+                            <StepNumber>3</StepNumber>
+                            <StepTitle>组合：组织成一个完整的答案</StepTitle>
+                        </StepHeader>
+                        <StepDescription>将刚才的思路点串联起来，形成一段流暢、详细的回答。</StepDescription>
+                        <FinalAnswerBox>{current5w1hExample.answer()}</FinalAnswerBox>
+                        <AnswerLegend>
+                            {current5w1hExample.legend.map(item => (
+                                <LegendItem key={item.id}><LegendColorBox type={idToPromptType[item.id]} />{item.text}</LegendItem>
+                            ))}
+                        </AnswerLegend>
                     </GuideContainer>
-
-                    <ImportantNote>
-                        <LightbulbIcon />
-                        <p><strong>注意:</strong> 5W1H 只是一个帮助你发散思维的工具，你不需要在每个回答中都包含所有要素。通常来说，Part 1 的每个问题回答 <strong>3-5 句话</strong>即可，选择其中 2-3 个角度进行阐述就非常充分了。</p>
-                    </ImportantNote>
                 </div>
             )}
             
             {activeSkill === 'pre' && (
                  <div key="pre" style={{ animation: 'fadeIn 0.4s ease' }}>
-                    <IntroSection>
-                        <h3>核心技巧二: PRE 结构法 (Point-Reason-Example)</h3>
-                        <p>除了扩展内容，清晰的逻辑结构同样重要。PRE 方法是一个简单、高效的论证结构，能让你的回答更有条理、更具说服力，避免因逻辑混乱而失分。</p>
-                    </IntroSection>
-
-                    <ExampleSelectorContainer>
-                        {preExamples.map((example, index) => (
-                            <ExampleSelectorButton
-                                key={index}
-                                $active={preExampleIndex === index}
-                                onClick={() => setPreExampleIndex(index)}
-                            >
-                                {`例子 ${index + 1}: ${example.label}`}
-                            </ExampleSelectorButton>
-                        ))}
-                    </ExampleSelectorContainer>
-
                     <GuideContainer>
-                        <div>
-                            <StepHeader>
-                                <StepNumber>1</StepNumber>
-                                <StepTitle>审题：分析问题</StepTitle>
-                            </StepHeader>
-                            <FlowQuestion>{currentPreExample.question}</FlowQuestion>
-                        </div>
-
+                        <StepHeader>
+                            <StepNumber>1</StepNumber>
+                            <StepTitle>审题：分析问题</StepTitle>
+                        </StepHeader>
+                        <FlowQuestion>{currentPreExample.question}</FlowQuestion>
                         <StepDivider />
-
-                        <div>
-                            <StepHeader>
-                                <StepNumber>2</StepNumber>
-                                <StepTitle>拆解：用 PRE 构建思路</StepTitle>
-                            </StepHeader>
-                            <StepDescription>围绕问题，按照“观点-理由-例子”的顺序组织你的想法。</StepDescription>
-                            <PromptsGridV2>
-                                {currentPreExample.prompts.map(renderPromptCard)}
-                            </PromptsGridV2>
-                        </div>
-                        
+                        <StepHeader>
+                            <StepNumber>2</StepNumber>
+                            <StepTitle>拆解：用 PRE 构建思路</StepTitle>
+                        </StepHeader>
+                        <StepDescription>围绕问题，按照“观点-理由-例子”的顺序组织你的想法。</StepDescription>
+                        <PromptsGridV2>
+                            {currentPreExample.prompts.map(renderPromptCard)}
+                        </PromptsGridV2>
                         <StepDivider />
-
-                        <div>
-                            <StepHeader>
-                                <StepNumber>3</StepNumber>
-                                <StepTitle>组合：组织成一个完整的答案</StepTitle>
-                            </StepHeader>
-                            <StepDescription>将刚才的思路点串联起来，形成一段逻辑清晰、有理有据的回答。</StepDescription>
-                            <FinalAnswerBox>{currentPreExample.answer()}</FinalAnswerBox>
-                            <AnswerLegend>
-                                {currentPreExample.legend.map(item => (
-                                    <LegendItem key={item.id}>
-                                        <LegendColorBox type={idToPromptType[item.id]} />
-                                        {item.text}
-                                    </LegendItem>
-                                ))}
-                            </AnswerLegend>
-                        </div>
+                        <StepHeader>
+                            <StepNumber>3</StepNumber>
+                            <StepTitle>组合：组织成一个完整的答案</StepTitle>
+                        </StepHeader>
+                        <StepDescription>将刚才的思路点串联起来，形成一段逻辑清晰、有理有据的回答。</StepDescription>
+                        <FinalAnswerBox>{currentPreExample.answer()}</FinalAnswerBox>
+                        <AnswerLegend>
+                            {currentPreExample.legend.map(item => (
+                                <LegendItem key={item.id}><LegendColorBox type={idToPromptType[item.id]} />{item.text}</LegendItem>
+                            ))}
+                        </AnswerLegend>
                     </GuideContainer>
-
-                    <ImportantNote>
-                        <LightbulbIcon />
-                        <p><strong>注意:</strong> PRE 结构非常适合 Part 1 的大多数问题。它能帮你快速组织一个长度适中 (3-4句话)、逻辑清晰的答案。熟练运用后，你可以根据问题灵活调整，比如提供多个 Reason 或 Example。</p>
-                    </ImportantNote>
                 </div>
             )}
-        </TipsContentV2>
+            <ImportantNote>
+                <LightbulbIcon />
+                <p><strong>Part 1 总结:</strong> 5W1H 帮助你丰富<strong>内容</strong>，PRE 帮助你构建<strong>逻辑</strong>。熟练运用这两个技巧，选择其中2-3个角度展开，就能给出一个既饱满又清晰的答案。</p>
+            </ImportantNote>
+        </ContentWrapper>
+    );
+};
+
+// FIX: Self-closed SVG elements (<line>, <polyline>) to be valid JSX.
+const RightArrowIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>;
+
+const Part2TipsContent: React.FC = () => {
+    return (
+        <ContentWrapper>
+            <IntroSection>
+                <h3>Part 2: 讲述一个有吸引力的故事</h3>
+                <p>Part 2 的核心是在1分钟准备后，进行1-2分钟的个人陈述。话题卡通常分为<b>人物、地点、事物、事件</b>等几大类。本部分考验的是你快速构建思路和讲述一个有结构、有细节故事的能力。5W1H 和 PRE 同样是你的得力助手。</p>
+            </IntroSection>
+            
+            <GuideContainer>
+                <div>
+                    <StepHeader>
+                        <StepNumber>1</StepNumber>
+                        <StepTitle>1分钟准备: 用 5W1H 构建故事蓝图</StepTitle>
+                    </StepHeader>
+                    <StepDescription>
+                        题卡上的提示 (prompts) 其实就是 5W1H 的变体。利用一分钟准备时间，针对每个提示写下关键词，这就是你故事的骨架。
+                    </StepDescription>
+                    <VisualAidGrid>
+                        <MockCueCard>
+                            <h4>Describe a good friend...</h4>
+                            <ul>
+                                <li>Who this person is</li>
+                                <li>How you met</li>
+                                <li>What you do together</li>
+                                <li>Why this person is important</li>
+                            </ul>
+                        </MockCueCard>
+                        <ArrowIcon><RightArrowIcon /></ArrowIcon>
+                        <MockNotepad>
+                            <h4>My Notes (1 min)</h4>
+                            <ul>
+                                <li><Highlight type="who">Who:</Highlight> Li Wei, classmate</li>
+                                <li><Highlight type="how">How:</Highlight> university project</li>
+                                <li><Highlight type="what">What:</Highlight> study, basketball</li>
+                                <li><Highlight type="why">Why:</Highlight> supportive (exam), funny</li>
+                            </ul>
+                        </MockNotepad>
+                    </VisualAidGrid>
+                </div>
+
+                <StepDivider />
+
+                <div>
+                    <StepHeader>
+                        <StepNumber>2</StepNumber>
+                        <StepTitle>充实细节: 用 PRE 让故事更饱满</StepTitle>
+                    </StepHeader>
+                    <StepDescription>
+                        在讲述故事时，特别是解释原因 (Why) 或阐述感受 (How) 时，可以巧妙地使用 PRE 结构，让你的论证更有力、更具说服力。
+                    </StepDescription>
+                    <PREExampleContainer>
+                        <PREPrompt>Prompt: "And explain why this person is important to you."</PREPrompt>
+                        <PREStep type="point">
+                            <PRELabel>P - Point</PRELabel>
+                            <PREText>He's incredibly supportive, which is the main reason he's so important to me.</PREText>
+                        </PREStep>
+                        <PREStep type="reason">
+                            <PRELabel>R - Reason</PRELabel>
+                            <PREText>This is because he always encourages me when I'm facing challenges.</PREText>
+                        </PREStep>
+                        <PREStep type="example">
+                            <PRELabel>E - Example</PRELabel>
+                            <PREText>For instance, right before my final exams, I was really stressed out. He spent a whole afternoon helping me review and told me he believed in me. That gesture made a huge difference.</PREText>
+                        </PREStep>
+                    </PREExampleContainer>
+                </div>
+
+                <StepDivider />
+
+                <div>
+                    <StepHeader>
+                        <StepNumber>3</StepNumber>
+                        <StepTitle>实战演练：一个完整的故事</StepTitle>
+                    </StepHeader>
+                    <FlowQuestion>Describe an old person you know and respect.</FlowQuestion>
+                     <FinalAnswerBox>
+                        <p><Highlight type="introduction">I'd like to talk about my grandfather. He's in his late seventies, and he's been a huge influence in my life.</Highlight></p>
+                        <p><Highlight type="body1">One of his main qualities is his incredible patience. (PRE Starts) I remember when I was struggling with a complex math problem. I wanted to give up, but he sat with me for over an hour, calmly explaining it from different angles until I understood. That taught me the value of persistence.</Highlight></p>
+                        <p><Highlight type="body2">Another thing I respect is his optimistic attitude. (PRE Starts) He has faced many challenges, but he always finds something positive. For example, after a knee surgery, he treated the recovery period as a great opportunity to catch up on his reading. His "every cloud has a silver lining" mindset is truly inspiring.</Highlight></p>
+                        <p><Highlight type="conclusion">So, he is not just a family member to me; he is a role model. His patience and optimism have shaped my character, and that's why I respect him so much.</Highlight></p>
+                     </FinalAnswerBox>
+                     <AnswerLegend>
+                        <LegendItem><LegendColorBox type="introduction" /> Introduction</LegendItem>
+                        <LegendItem><LegendColorBox type="body1" /> Story 1 (with PRE)</LegendItem>
+                        <LegendItem><LegendColorBox type="body2" /> Story 2 (with PRE)</LegendItem>
+                        <LegendItem><LegendColorBox type="conclusion" /> Conclusion</LegendItem>
+                    </AnswerLegend>
+                </div>
+            </GuideContainer>
+        </ContentWrapper>
+    );
+};
+
+const Part3TipsContent: React.FC = () => {
+    const currentPREExample = prePart3Examples[0];
+    return (
+        <ContentWrapper>
+            <IntroSection>
+                <h3>Part 3: 深入探讨，展现思辨能力</h3>
+                <p>Part 3 要求你就 Part 2 的相关话题进行更深入、更抽象的讨论。考官希望看到你的逻辑思维和论证能力。PRE 结构是这一部分的关键技巧，能帮助你构建一个逻辑严密、有理有据的回答。</p>
+            </IntroSection>
+
+            <GuideContainer>
+                <div>
+                    <StepHeader>
+                        <StepNumber>1</StepNumber>
+                        <StepTitle>审题：分析问题</StepTitle>
+                    </StepHeader>
+                    <FlowQuestion>{currentPREExample.question}</FlowQuestion>
+                </div>
+
+                <StepDivider />
+
+                <div>
+                    <StepHeader>
+                        <StepNumber>2</StepNumber>
+                        <StepTitle>拆解：用 PRE 构建论点</StepTitle>
+                    </StepHeader>
+                    <StepDescription>
+                        <b>P</b>oint (观点) → <b>R</b>eason (理由) → <b>E</b>xample (例子). 
+                        这个经典结构可以帮助你清晰地表达任何观点。
+                    </StepDescription>
+                    <PromptsGridV2>
+                        {currentPREExample.prompts.map(renderPromptCard)}
+                    </PromptsGridV2>
+                </div>
+
+                <StepDivider />
+                
+                <div>
+                    <StepHeader>
+                        <StepNumber>3</StepNumber>
+                        <StepTitle>组合：形成一个有说服力的答案</StepTitle>
+                    </StepHeader>
+                    <StepDescription>将你的观点、理由和例子串联起来，形成一个逻辑连贯的完整回答。</StepDescription>
+                    <FinalAnswerBox>{currentPREExample.answer()}</FinalAnswerBox>
+                    <AnswerLegend>
+                        {currentPREExample.legend.map(item => (
+                            <LegendItem key={item.id}><LegendColorBox type={idToPromptType[item.id]} />{item.text}</LegendItem>
+                        ))}
+                    </AnswerLegend>
+                </div>
+            </GuideContainer>
+            <ImportantNote>
+                <LightbulbIcon />
+                <p><strong>Part 3 总结:</strong> 始终尝试用 PRE 结构来组织你的思想。即使你对某个话题不熟悉，这个框架也能帮助你清晰地表达观点。关键是展示你的思考过程，而不仅仅是给出一个简单的答案。</p>
+            </ImportantNote>
+        </ContentWrapper>
     );
 };
 
 
 const TipsPage: React.FC<TipsPageProps> = ({ navigateTo }) => {
-    const [activeTab, setActiveTab] = useState<'part1' | 'part2' | 'part3'>('part1');
-
-    const renderContent = () => {
-        switch (activeTab) {
-            case 'part1':
-                return <Part1Tips />;
-            case 'part2':
-                return (
-                    <PlaceholderSection>
-                        <h3>Part 2 技巧正在精心准备中...</h3>
-                        <p>敬请期待关于个人陈述的结构、时间管理和故事讲述技巧的详细指南。</p>
-                    </PlaceholderSection>
-                );
-            case 'part3':
-                return (
-                     <PlaceholderSection>
-                        <h3>Part 3 技巧正在精心准备中...</h3>
-                        <p>敬请期待关于深入讨论、抽象思维和展示批判性观点的互动练习。</p>
-                    </PlaceholderSection>
-                );
-            default:
-                return null;
-        }
-    };
+    type ActivePart = 'part1' | 'part2' | 'part3';
+    const [activePart, setActivePart] = useState<ActivePart>('part1');
 
     return (
         <PageContainer>
@@ -342,19 +394,23 @@ const TipsPage: React.FC<TipsPageProps> = ({ navigateTo }) => {
                 </BackButton>
                 <h1>雅思口语回答技巧</h1>
             </PageHeader>
-            <TipsNav>
-                <TipsNavButton $active={activeTab === 'part1'} onClick={() => setActiveTab('part1')}>
-                    Part 1
-                </TipsNavButton>
-                <TipsNavButton $active={activeTab === 'part2'} onClick={() => setActiveTab('part2')}>
-                    Part 2
-                </TipsNavButton>
-                <TipsNavButton $active={activeTab === 'part3'} onClick={() => setActiveTab('part3')}>
-                    Part 3
-                </TipsNavButton>
-            </TipsNav>
+            
+            <PartNavigation>
+                <PartNavButton $active={activePart === 'part1'} onClick={() => setActivePart('part1')}>
+                    Part 1 技巧
+                </PartNavButton>
+                <PartNavButton $active={activePart === 'part2'} onClick={() => setActivePart('part2')}>
+                    Part 2 技巧
+                </PartNavButton>
+                <PartNavButton $active={activePart === 'part3'} onClick={() => setActivePart('part3')}>
+                    Part 3 技巧
+                </PartNavButton>
+            </PartNavigation>
+
             <main>
-                {renderContent()}
+                {activePart === 'part1' && <Part1TipsContent />}
+                {activePart === 'part2' && <Part2TipsContent />}
+                {activePart === 'part3' && <Part3TipsContent />}
             </main>
         </PageContainer>
     );
@@ -365,6 +421,10 @@ const TipsPage: React.FC<TipsPageProps> = ({ navigateTo }) => {
 const PageContainer = styled.div`
     max-width: 900px;
     margin: 0 auto;
+    animation: fadeIn 0.5s ease;
+`;
+
+const ContentWrapper = styled.div`
     animation: fadeIn 0.5s ease;
 `;
 
@@ -428,40 +488,32 @@ const BackButton = styled.button`
     }
 `;
 
-const TipsNav = styled.nav`
+const PartNavigation = styled.nav`
     display: flex;
     justify-content: center;
     gap: 0.5rem;
+    margin-bottom: 2.5rem;
+    border-radius: 999px;
     background-color: ${({ theme }) => theme.colors.boxBg};
     padding: 0.5rem;
-    border-radius: 9999px;
-    margin-bottom: 2.5rem;
-    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-        gap: 0.25rem;
-        padding: 0.25rem;
-    }
+    border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
-const TipsNavButton = styled.button<{ $active: boolean }>`
+const PartNavButton = styled.button<{ $active: boolean }>`
+    flex: 1;
     font-family: inherit;
     font-size: 1rem;
     font-weight: 600;
-    padding: 0.6rem 1.5rem;
-    border-radius: 9999px;
+    padding: 0.75rem 1rem;
     border: none;
-    background-color: transparent;
-    color: ${({ theme }) => theme.colors.label};
+    border-radius: 999px;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
+    background-color: ${({ $active, theme }) => $active ? theme.colors.primaryBlue : 'transparent'};
+    color: ${({ $active, theme }) => $active ? 'white' : theme.colors.label};
 
-    ${({ $active, theme }) => $active && `
-        background-color: ${theme.colors.cardBg};
-        color: ${theme.colors.header};
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    `}
-    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
+    &:hover:not(:disabled) {
+        color: ${({ $active, theme }) => $active ? 'white' : theme.colors.header};
     }
 `;
 
@@ -482,7 +534,7 @@ const SkillNavButton = styled.button<{ $active: boolean }>`
     cursor: pointer;
     color: ${({ theme, $active }) => $active ? theme.colors.header : theme.colors.label};
     border-bottom: 3px solid ${({ $active, theme }) => $active ? theme.colors.primaryOrange : 'transparent'};
-    margin-bottom: -2px;
+    margin-bottom: -1px;
     transition: color 0.2s ease;
 
     &:hover {
@@ -492,11 +544,8 @@ const SkillNavButton = styled.button<{ $active: boolean }>`
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
         font-size: 1rem;
         padding: 0.75rem 1rem;
+        flex-grow: 1;
     }
-`;
-
-const TipsContentV2 = styled.div`
-    animation: fadeIn 0.4s ease;
 `;
 
 const IntroSection = styled.section`
@@ -518,10 +567,6 @@ const IntroSection = styled.section`
         opacity: 0.9;
         line-height: 1.7;
         max-width: 80ch;
-
-        & + p {
-            margin-top: 1rem;
-        }
     }
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
         padding: 1.5rem;
@@ -582,7 +627,7 @@ const FlowQuestion = styled.p`
     font-weight: 500;
     font-size: 1.2rem;
     color: ${({ theme }) => theme.colors.header};
-    margin: 1.5rem 0 0 0;
+    margin: 1rem 0 0 0;
     border-left: 5px solid ${({ theme }) => theme.colors.primaryBlue};
 `;
 
@@ -593,6 +638,7 @@ const StepDescription = styled.p`
     padding-left: calc(40px + 1rem);
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
         padding-left: 0;
+        font-size: 1rem;
     }
 `;
 
@@ -606,7 +652,7 @@ const StepDivider = styled.hr`
 const PromptsGridV2 = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
     padding-left: calc(40px + 1rem);
 
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
@@ -666,6 +712,17 @@ const FinalAnswerBox = styled.div`
     color: #34495e;
     font-size: 1.1rem;
     margin-top: 1.5rem;
+
+    p {
+        margin: 0 0 1em 0;
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+        font-size: 1rem;
+    }
 `;
 
 const highlightColors: { [key: string]: { bg: string, text: string } } = {
@@ -679,12 +736,18 @@ const highlightColors: { [key: string]: { bg: string, text: string } } = {
     point: { bg: 'rgba(52, 152, 219, 0.2)', text: '#1d6a9f' },
     reason: { bg: 'rgba(230, 126, 34, 0.2)', text: '#a05716' },
     example: { bg: 'rgba(39, 174, 96, 0.2)', text: '#1e8449' },
+    introduction: { bg: 'rgba(52, 152, 219, 0.2)', text: '#1d6a9f' },
+    body1: { bg: 'rgba(230, 126, 34, 0.2)', text: '#a05716' },
+    body2: { bg: 'rgba(39, 174, 96, 0.2)', text: '#1e8449' },
+    conclusion: { bg: 'rgba(155, 89, 182, 0.2)', text: '#6d3a82' },
 };
 
 const Highlight = styled.span<{ type: string }>`
-    background-color: ${({ type }) => highlightColors[idToPromptType[type]]?.bg || 'transparent'};
+    background-color: ${({ type }) => highlightColors[idToPromptType[type] || type]?.bg || 'transparent'};
     font-weight: 500;
-    color: ${({ type }) => highlightColors[idToPromptType[type]]?.text || 'inherit'};
+    color: ${({ type }) => highlightColors[idToPromptType[type] || type]?.text || 'inherit'};
+    border-radius: 3px;
+    padding: 0.1em 0;
 `;
 
 const AnswerLegend = styled.div`
@@ -707,37 +770,7 @@ const LegendColorBox = styled.span<{ type: string }>`
     width: 16px;
     height: 16px;
     border-radius: 4px;
-    background-color: ${({ type }) => highlightColors[type]?.bg?.replace('0.2', '0.4') || 'transparent'};
-`;
-
-const ExampleSelectorContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 2.5rem;
-`;
-
-const ExampleSelectorButton = styled.button<{ $active: boolean }>`
-    background-color: ${({ theme, $active }) => $active ? theme.colors.primaryOrange : theme.colors.cardBg};
-    color: ${({ theme, $active }) => $active ? 'white' : theme.colors.header};
-    border: 1px solid ${({ theme, $active }) => $active ? theme.colors.primaryOrange : theme.colors.border};
-    padding: 0.8rem 1.5rem;
-    border-radius: 9999px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:hover {
-        background-color: ${({ theme, $active }) => $active ? '#e88f33' : theme.colors.boxBg};
-        border-color: ${({ theme, $active }) => $active ? '#e88f33' : theme.colors.label};
-    }
-    
-    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-        padding: 0.7rem 1.2rem;
-        font-size: 0.9rem;
-    }
+    background-color: ${({ type }) => highlightColors[idToPromptType[type] || type]?.bg?.replace('0.2', '0.4') || 'transparent'};
 `;
 
 const ImportantNote = styled.section`
@@ -773,23 +806,104 @@ const ImportantNote = styled.section`
     }
 `;
 
-const PlaceholderSection = styled.section`
-    background-color: ${({ theme }) => theme.colors.cardBg};
-    border-radius: 16px;
-    padding: 3rem 2rem;
-    box-shadow: 0 4px 12px ${({ theme }) => theme.colors.shadow};
-    text-align: center;
-    h3 {
-        margin: 0 0 1rem 0;
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: ${({ theme }) => theme.colors.header};
-    }
-    p {
-        color: ${({ theme }) => theme.colors.label};
-        font-size: 1.1rem;
+// --- Part 2 Specific Styles ---
+
+const VisualAidGrid = styled.div`
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    padding-left: calc(40px + 1rem);
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding-left: 0;
     }
 `;
 
+const MockCardBase = styled.div`
+    border: 1px solid ${({ theme }) => theme.colors.border};
+    border-radius: 12px;
+    padding: 1.5rem;
+    background-color: ${({ theme }) => theme.colors.cardBg};
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    height: 100%;
+
+    h4 {
+        margin: 0 0 1rem 0;
+        font-weight: 600;
+        color: ${({ theme }) => theme.colors.header};
+    }
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        li {
+            margin-bottom: 0.5rem;
+        }
+    }
+`;
+
+const MockCueCard = styled(MockCardBase)`
+    background-color: ${({ theme }) => theme.colors.cardYellowBg};
+    border-color: #fbe5a2;
+    li::before {
+        content: '•';
+        color: ${({ theme }) => theme.colors.label};
+        margin-right: 0.5rem;
+    }
+`;
+
+const MockNotepad = styled(MockCardBase)`
+    li {
+        display: flex;
+        gap: 0.5rem;
+    }
+`;
+
+const ArrowIcon = styled.div`
+    color: ${({ theme }) => theme.colors.label};
+    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+        transform: rotate(90deg);
+        margin: 0 auto;
+    }
+`;
+
+const PREExampleContainer = styled.div`
+    padding-left: calc(40px + 1rem);
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+        padding-left: 0;
+    }
+`;
+
+const PREPrompt = styled.div`
+    font-style: italic;
+    color: ${({ theme }) => theme.colors.label};
+    margin-bottom: 0.5rem;
+`;
+
+const PREStep = styled.div<{ type: string }>`
+    border-left: 4px solid;
+    padding: 0.75rem 1.25rem;
+    border-color: ${({ theme, type }) => theme.colors[type as keyof typeof theme.colors]};
+    background-color: ${({ theme, type }) => theme.colors[`analysis${type.charAt(0).toUpperCase() + type.slice(1)}Bg` as keyof typeof theme.colors]};
+    border-radius: 0 8px 8px 0;
+`;
+
+const PRELabel = styled.div`
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    color: ${({ theme }) => theme.colors.header};
+`;
+
+const PREText = styled.p`
+    margin: 0;
+`;
 
 export default TipsPage;

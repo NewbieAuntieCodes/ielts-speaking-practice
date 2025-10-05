@@ -1,1 +1,1 @@
-export type Page = 'home' | 'bank' | 'tips' | 'analysis';
+export type Page = 'home' | 'bank' | 'tips' | 'analysis' | 'scoring';

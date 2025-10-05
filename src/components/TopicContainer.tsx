@@ -13,23 +13,37 @@ const TopicContainer: React.FC<TopicContainerProps> = ({ initialTopics, onCardCl
     const [nextTopicId, setNextTopicId] = useState(initialTopics.length);
     const [nextCardId, setNextCardId] = useState(100); // Simple ID generator
 
-    const handleCardDrop = (cardId: string, fromTopicId: string, toTopicId: string) => {
-        if (fromTopicId === toTopicId) return;
-
+    const handleCardMove = (cardId: string, fromTopicId: string, toTopicId: string, targetCardId: string | null = null, insertBefore = true) => {
+        if (cardId === targetCardId) return;
+    
         setTopics(prevTopics => {
             const newTopics = JSON.parse(JSON.stringify(prevTopics));
-            
+    
             const fromTopic = newTopics.find((t: TopicData) => t.id === fromTopicId);
             const toTopic = newTopics.find((t: TopicData) => t.id === toTopicId);
-            
+    
             if (!fromTopic || !toTopic) return prevTopics;
-
+    
             const cardIndex = fromTopic.cards.findIndex((c: CueCardData) => c.id === cardId);
             if (cardIndex === -1) return prevTopics;
-
+    
             const [movedCard] = fromTopic.cards.splice(cardIndex, 1);
-            toTopic.cards.push(movedCard);
-
+    
+            if (targetCardId) {
+                let targetIndex = toTopic.cards.findIndex((c: CueCardData) => c.id === targetCardId);
+                if (targetIndex !== -1) {
+                    if (!insertBefore) {
+                        targetIndex++;
+                    }
+                    toTopic.cards.splice(targetIndex, 0, movedCard);
+                } else {
+                    toTopic.cards.push(movedCard); // Fallback if target not found
+                }
+            } else {
+                // If no target card (e.g., dropped on the box), add to the end.
+                toTopic.cards.push(movedCard);
+            }
+    
             return newTopics;
         });
     };
@@ -86,7 +100,7 @@ const TopicContainer: React.FC<TopicContainerProps> = ({ initialTopics, onCardCl
                 <CardBox 
                     key={topic.id} 
                     topic={topic} 
-                    onCardDrop={handleCardDrop}
+                    onCardMove={handleCardMove}
                     onTopicUpdate={handleTopicUpdate}
                     onAddCard={handleAddCard}
                     onCardClick={onCardClick}
@@ -94,7 +108,8 @@ const TopicContainer: React.FC<TopicContainerProps> = ({ initialTopics, onCardCl
             ))}
             <AddNewTopicBox>
                 <AddTopicButton aria-label="添加新话题" onClick={handleAddTopic}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    {/* FIX: Self-closed SVG <line> elements to be valid JSX. */}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                     <span>添加新话题</span>
                 </AddTopicButton>
             </AddNewTopicBox>

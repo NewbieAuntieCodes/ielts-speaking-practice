@@ -5,17 +5,20 @@ import CueCard from './CueCard';
 
 interface CardBoxProps {
     topic: TopicData;
-    onCardDrop: (cardId: string, fromTopicId: string, toTopicId: string) => void;
+    onCardMove: (cardId: string, fromTopicId: string, toTopicId: string, targetCardId: string | null, insertBefore?: boolean) => void;
     onTopicUpdate: (topicId: string, newTitle: string) => void;
     onAddCard: (topicId: string) => void;
     onCardClick: (card: CueCardData) => void;
 }
 
-const AddIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
-const EditIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
-const SaveIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>;
+// FIX: Self-closed SVG <line> element to be valid JSX.
+const AddIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>;
+// FIX: Self-closed SVG <path> elements to be valid JSX.
+const EditIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>;
+// FIX: Self-closed SVG <polyline> element to be valid JSX.
+const SaveIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>;
 
-const CardBox: React.FC<CardBoxProps> = ({ topic, onCardDrop, onTopicUpdate, onAddCard, onCardClick }) => {
+const CardBox: React.FC<CardBoxProps> = ({ topic, onCardMove, onTopicUpdate, onAddCard, onCardClick }) => {
     const [isEditing, setIsEditing] = useState(!!topic.isNew);
     const [editValue, setEditValue] = useState(topic.title.replace(/^话题: /, ''));
     const [dragOver, setDragOver] = useState(false);
@@ -55,7 +58,7 @@ const CardBox: React.FC<CardBoxProps> = ({ topic, onCardDrop, onTopicUpdate, onA
         setDragOver(false);
         const cardId = e.dataTransfer.getData('cardId');
         const fromTopicId = e.dataTransfer.getData('fromTopicId');
-        onCardDrop(cardId, fromTopicId, topic.id);
+        onCardMove(cardId, fromTopicId, topic.id, null);
     };
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -119,7 +122,8 @@ const CardBox: React.FC<CardBoxProps> = ({ topic, onCardDrop, onTopicUpdate, onA
                         key={card.id} 
                         card={card} 
                         fromTopicId={topic.id}
-                        onCardClick={onCardClick} 
+                        onCardClick={onCardClick}
+                        onCardMove={onCardMove}
                     />
                 ))}
             </CardBoxContent>

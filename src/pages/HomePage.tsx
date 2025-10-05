@@ -6,25 +6,27 @@ interface HomePageProps {
     navigateTo: (page: Page) => void;
 }
 
+// FIX: Self-closed SVG elements (<path>, <line>) to be valid JSX.
 const QuestionBankIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-        <line x1="12" y1="8" x2="16" y2="8"></line>
-        <line x1="8" y1="12" x2="16" y2="12"></line>
-        <line x1="8" y1="16" x2="12" y2="16"></line>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        <line x1="12" y1="8" x2="16" y2="8" />
+        <line x1="8" y1="12" x2="16" y2="12" />
+        <line x1="8" y1="16" x2="12" y2="16" />
     </svg>
 );
 
+// FIX: Self-closed SVG <path> elements to be valid JSX.
 const TipsIcon = () => (
-     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 13a6 6 0 0 1-6 6 6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6z"></path>
-        <path d="M12 19v2"></path><path d="M12 3v2"></path>
-        <path d="M5 12H3"></path><path d="M21 12h-2"></path>
-        <path d="m18.36 18.36-.78-.78"></path>
-        <path d="m6.42 6.42-.78-.78"></path>
-        <path d="m18.36 5.64-.78.78"></path>
-        <path d="m6.42 17.58-.78.78"></path>
+     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 13a6 6 0 0 1-6 6 6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6z" />
+        <path d="M12 19v2" /><path d="M12 3v2" />
+        <path d="M5 12H3" /><path d="M21 12h-2" />
+        <path d="m18.36 18.36-.78-.78" />
+        <path d="m6.42 6.42-.78-.78" />
+        <path d="m18.36 5.64-.78.78" />
+        <path d="m6.42 17.58-.78.78" />
     </svg>
 );
 
@@ -36,18 +38,28 @@ const HomePage: React.FC<HomePageProps> = ({ navigateTo }) => {
                 <h1>雅思口语全攻略</h1>
                 <p>2025 年 9-12 月题库 &amp; 回答技巧</p>
             </HomeHeader>
-            <NavCards>
+            <CardsGrid>
+                 <NavCard 
+                    className="full-width-card"
+                    onClick={() => navigateTo('scoring')} 
+                    role="button" tabIndex={0} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && navigateTo('scoring')}>
+                    <NavCardIcon><TipsIcon /></NavCardIcon>
+                    <h2>评分标准和考试需知</h2>
+                    <p>深入了解雅思官方口语评分的四大维度、考试基本信息与核心备考建议。</p>
+                </NavCard>
+
                 <NavCard onClick={() => navigateTo('tips')} role="button" tabIndex={0} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && navigateTo('tips')}>
                     <NavCardIcon><TipsIcon /></NavCardIcon>
                     <h2>回答技巧</h2>
-                    <p>掌握官方评分标准，全面提升流利度、词汇、语法和发音水平。</p>
+                    <p>学习 Part 1/2/3 的核心答题策略与高分技巧，让你的表达更流利、更有逻辑。</p>
                 </NavCard>
+
                 <NavCard onClick={() => navigateTo('bank')} role="button" tabIndex={0} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && navigateTo('bank')}>
                     <NavCardIcon><QuestionBankIcon /></NavCardIcon>
                     <h2>口语题库</h2>
                     <p>覆盖 Part 1/2/3 最新题目，包含完整问题列表与高质量参考范文。</p>
                 </NavCard>
-            </NavCards>
+            </CardsGrid>
         </HomeContainer>
     );
 };
@@ -86,14 +98,21 @@ const HomeHeader = styled.header`
     }
 `;
 
-const NavCards = styled.main`
+const CardsGrid = styled.main`
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
 
+    .full-width-card {
+        grid-column: 1 / -1;
+    }
+
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        .full-width-card {
+            grid-column: auto;
+        }
     }
 `;
 
@@ -136,8 +155,14 @@ const NavCard = styled.div`
         flex-grow: 1;
     }
 
-    &:nth-child(1) ${NavCardIcon} {
+    &:nth-child(1) ${NavCardIcon},
+    &:nth-child(2) ${NavCardIcon} {
         color: ${({ theme }) => theme.colors.primaryOrange};
+    }
+
+     &.full-width-card {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
     }
 
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
